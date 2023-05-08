@@ -13,11 +13,13 @@ from .views import (
     ApiTaskRequestView,
     ApiTaskErrandSerializer,
     ApiMyTotalEarningView,
+    ApiNewBidderView
 
 )
 
 urlpatterns = [
     path("", ApiTaskView.as_view(), name="task"),
+    path("<str:id>/new-bidder/", ApiNewBidderView.as_view(), name="new_bidder"),
     path("my-requests/", ApiTaskRequestView.as_view(), name="requested-tasks"),
     path("my-errands/", ApiTaskErrandSerializer.as_view(), name="errands"),
     path("my-earnings/", ApiMyTotalEarningView.as_view(), name="my-earnings"),

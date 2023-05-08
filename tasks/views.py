@@ -4,7 +4,7 @@ from .models import Task, AcceptTask, TaskReview, Bidder, NewBidder
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import TaskSerializer, AcceptTaskSerializer, TaskReviewSerializer, GetBidderSerializer, PostBidderSerializer, TaskRequestSerializer, MyTotalEarningsSerializer, TaskDetailSerializer, ChangePasswordSerializer, PostNewBidderSerializer
+from .serializers import TaskSerializer, AcceptTaskSerializer, TaskReviewSerializer, GetBidderSerializer, PostBidderSerializer, TaskRequestSerializer, MyTotalEarningsSerializer, TaskDetailSerializer, ChangePasswordSerializer, PostNewBidderSerializer, GetNewBidderSerializer
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from users.models import User
@@ -318,12 +318,22 @@ class ApiMyTotalEarningView(APIView):
 
 class ApiNewBidderView(APIView):
     permission_classes = [IsAuthenticated]
+
+    def get(self, request, id, format=None):
+        user = request.user
+        task = Task.objects.get(id=id)
+        new_bidder = NewBidder.objects.filter(user=user, task=task)
+        serializer = GetNewBidderSerializer(new_bidder)
+        return Response(serializer.data)
+
     def post(self, request, id, format=None):
         user = request.user
         task = Task.objects.get(id=id)
 
         new_bidder = NewBidder.objects.create(user=user, task=task)
         serializer = PostBidderSerializer(new_bidder, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
         
 

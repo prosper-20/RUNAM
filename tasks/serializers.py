@@ -14,6 +14,12 @@ class PostNewBidderSerializer(serializers.ModelSerializer):
         model = NewBidder
         fields = ["message"]
 
+
+class GetNewBidderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NewBidder
+        fields = ["message"]
+
     # def get_bidder_username(self, obj):
     #     return obj.user.username
 
