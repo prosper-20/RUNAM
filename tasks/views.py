@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from rest_framework import serializers
-from .models import Task, AcceptTask, TaskReview, Bidder
+from .models import Task, AcceptTask, TaskReview, Bidder, NewBidder
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import TaskSerializer, AcceptTaskSerializer, TaskReviewSerializer, GetBidderSerializer, PostBidderSerializer, TaskRequestSerializer, MyTotalEarningsSerializer, TaskDetailSerializer, ChangePasswordSerializer
+from .serializers import TaskSerializer, AcceptTaskSerializer, TaskReviewSerializer, GetBidderSerializer, PostBidderSerializer, TaskRequestSerializer, MyTotalEarningsSerializer, TaskDetailSerializer, ChangePasswordSerializer, PostNewBidderSerializer
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from users.models import User
@@ -316,8 +316,15 @@ class ApiMyTotalEarningView(APIView):
 
 
 
+class ApiNewBidderView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request, id, format=None):
+        user = request.user
+        task = Task.objects.get(id=id)
 
-
+        new_bidder = NewBidder.objects.create(user=user, task=task)
+        serializer = PostBidderSerializer(new_bidder, data=request.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
         
 
 

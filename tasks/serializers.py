@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Task, AcceptTask, TaskReview, Keyword, Bidder
+from .models import Task, AcceptTask, TaskReview, Keyword, Bidder, NewBidder
 from users.models import User
 
 class KeywordsSerializer(serializers.ModelSerializer):
@@ -8,14 +8,21 @@ class KeywordsSerializer(serializers.ModelSerializer):
         fields = ["name"]
 
 
+class PostNewBidderSerializer(serializers.ModelSerializer):
+    # user = serializers.SerializerMethodField("get_bidder_username")
+    class Meta:
+        model = NewBidder
+        fields = ["message"]
+
+    # def get_bidder_username(self, obj):
+    #     return obj.user.username
+
+
 class GetBidderSerializer(serializers.ModelSerializer):
     # user = serializers.SerializerMethodField("get_bidder_username")
     class Meta:
         model = Bidder
         fields = ["user", "message"]
-
-    # def get_bidder_username(self, obj):
-    #     return obj.user.username
     
 
 
