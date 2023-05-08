@@ -322,7 +322,7 @@ class ApiNewBidderView(APIView):
     def get(self, request, id, format=None):
         user = request.user
         task = Task.objects.get(id=id)
-        new_bidder = NewBidder.objects.filter(user=user, task=task)
+        new_bidder = NewBidder.objects.get(user=user, task=task)
         serializer = GetNewBidderSerializer(new_bidder)
         return Response(serializer.data)
 
