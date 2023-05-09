@@ -101,12 +101,7 @@ class ApiEditTaskView(APIView):
         except Task.DoesNotExist:
             return Response({"Error": "Cannot find a matching task"})
         
-
-
-
-           
-
-    
+ 
 
 
 class ApiAvailableTasksView(APIView): #You changed this from ListAPIView to APIView
@@ -115,8 +110,6 @@ class ApiAvailableTasksView(APIView): #You changed this from ListAPIView to APIV
         serializer = TaskSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
         
-
-
 
 
 class ApiUndergoingTaskView(ListAPIView):
