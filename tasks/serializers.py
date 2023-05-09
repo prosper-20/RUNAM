@@ -106,7 +106,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     # keywords = KeywordsSerializer()
     keywords = serializers.SerializerMethodField("get_actual_keyword")
     # task_bidders = GetBidderSerializer()
-    task_bidders = serializers.SerializerMethodField("get_task_bidders")
+    # task_bidders = serializers.SerializerMethodField("get_task_bidders")
     is_active = serializers.ReadOnlyField()
     completed = serializers.ReadOnlyField()
     paid = serializers.ReadOnlyField()
@@ -122,8 +122,8 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     def get_actual_keyword(self, obj):
         return KeywordsSerializer(obj.keywords.all(), many=True).data
     
-    def get_task_bidders(self, obj):
-        return obj.task_bidders.all()
+    # def get_task_bidders(self, obj):
+    #     return obj.task_bidders.all()
         # return GetBidderSerializer(obj.task_bidders.all(), many=True).data
 
     
