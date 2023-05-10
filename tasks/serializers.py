@@ -110,7 +110,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     is_active = serializers.ReadOnlyField()
     completed = serializers.ReadOnlyField()
     paid = serializers.ReadOnlyField()
-    
+
     class Meta:
         model = Task
         fields = ["id", "name", "description", "image", "bidding_amount", "sender", "sender_name", "keywords", "is_active", "task_bidders",  "completed", "paid"]

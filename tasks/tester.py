@@ -8,7 +8,7 @@ url = "https://rest-ww.telesign.com/v1/verify/sms"
 my_string = f"{id}:{api}"
 
 my_string.encode(encoding = 'UTF-8', errors = 'strict')
-message_bytes = message.encode('ascii')
+# message_bytes = message.encode('ascii')
 base64_bytes = base64.b64encode(my_string)
 
 print(my_string)
