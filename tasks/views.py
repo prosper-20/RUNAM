@@ -216,9 +216,11 @@ class ApiTaskBidView(APIView):
                  }, status=status.HTTP_400_BAD_REQUEST)
 
         new_bidder = Bidder(task=task, user=user)
+        
         serializer = PostBidderSerializer(new_bidder, data=request.data)
         serializer.is_valid(raise_exception=True)
         new_bidder_data = serializer.save()
+        task.task_bidders.add(new_bidder)
         return Response(
             {"Success": "Bid for task submitted",
             "user": user.username,
@@ -331,9 +333,21 @@ class ApiNewBidderView(APIView):
         
 
 
-        
 
-        
+
+def ApiMyPerformanceView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        completed_tasks = 0 
+        all_user_tasks = Task.objects.filter(messenger=user)
+        for task in all_user_tasks:
+            if task.completed == True:
+                completed_tasks += 1
+        performance_percentage = (completed_tasks/all_user_tasks) * 100
+        return Response({"Your performance", performance_percentage}, status=status.HTTP_200_OK)
+
+
 
 
 

@@ -17,7 +17,7 @@ class Task(models.Model):
     id = models.UUIDField(primary_key = True, default = uuid.uuid4, editable = False)
     name = models.CharField(max_length=200)
     description = models.TextField()
-    keywords = models.ManyToManyField(Keyword)
+    keywords = models.ManyToManyField(Keyword, blank=True, null=True)
     bidding_amount = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to="task_images", blank=True, null=True)
     sender =models.ForeignKey(User, related_name="sender", on_delete=models.CASCADE)
