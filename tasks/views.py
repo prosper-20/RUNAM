@@ -335,17 +335,21 @@ class ApiNewBidderView(APIView):
 
 
 
-def ApiMyPerformanceView(APIView):
+class ApiMyPerformanceView(APIView):
+    '''
+    Returns the users performance in percentage 
+    '''
     permission_classes = [IsAuthenticated]
     def get(self, request, *args, **kwargs):
         user = request.user
         completed_tasks = 0 
         all_user_tasks = Task.objects.filter(messenger=user)
+        total_no_of_tasks = len(all_user_tasks)
         for task in all_user_tasks:
             if task.completed == True:
                 completed_tasks += 1
-        performance_percentage = (completed_tasks/all_user_tasks) * 100
-        return Response({"Your performance", performance_percentage}, status=status.HTTP_200_OK)
+        performance_percentage = (completed_tasks/total_no_of_tasks) * 100
+        return Response({"Your performance": f"{performance_percentage}%"}, status=status.HTTP_200_OK)
 
 
 
