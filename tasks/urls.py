@@ -15,6 +15,7 @@ from .views import (
     ApiMyTotalEarningView,
     ApiNewBidderView,
     ApiMyPerformanceView,
+    ApiMyActivityView
 
 )
 
@@ -22,6 +23,7 @@ urlpatterns = [
     path("", ApiTaskView.as_view(), name="task"),
     path("<str:id>/new-bidder/", ApiNewBidderView.as_view(), name="new_bidder"),
     path("my-requests/", ApiTaskRequestView.as_view(), name="requested-tasks"),
+    path("my-activity/", ApiMyActivityView.as_view(), name="my-activity"),
     path("my-errands/", ApiTaskErrandSerializer.as_view(), name="errands"),
     path("my-earnings/", ApiMyTotalEarningView.as_view(), name="my-earnings"),
     path("my-performace/", ApiMyPerformanceView.as_view(), name="my-performance"),

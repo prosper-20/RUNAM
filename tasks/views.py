@@ -354,7 +354,23 @@ class ApiMyPerformanceView(APIView):
 
 
 
-
+class ApiMyActivityView(APIView):
+    def get(self, request, format=None):
+        user = request.user
+        completed_tasks = 0 
+        all_user_tasks = Task.objects.filter(messenger=user)
+        total_no_of_tasks = len(all_user_tasks)
+        incomplete_tasks = 0
+        for task in all_user_tasks:
+            if task.completed == True:
+                completed_tasks += 1
+            else:
+                incomplete_tasks += 1
+        performance_percentage = (completed_tasks/total_no_of_tasks) * 100
+        return Response({"Completion rate": f"{performance_percentage}%",
+        "Incomplete": incomplete_tasks,
+        "completed": completed_tasks}, status=status.HTTP_200_OK)
+        
         
 
 
