@@ -78,3 +78,24 @@ class AcceptTask(models.Model):
 
     def __str__(self):
         return self.task
+
+
+
+SUPPORT_CATEGORY = (
+    ("Inquiry", "Inquiry"),
+    ("Complaint", "Complaint"),
+    ("Others", "Others")
+)
+    
+
+
+class Support(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, blank=True, null=True)
+    category = models.CharField(choices=SUPPORT_CATEGORY, max_length=20)
+    message = models.TextField()
+    date_created = models.DateTimeField(auto_now_add=True)
+
+
+    def __str__(self):
+        return self.user 

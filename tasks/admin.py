@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Task, TaskReview, Keyword, Bidder, NewBidder
+from .models import Task, TaskReview, Keyword, Bidder, NewBidder, Support
 
 
 @admin.register(Task)
@@ -31,4 +31,12 @@ class BidderAdmin(admin.ModelAdmin):
 @admin.register(TaskReview)
 class TaskRevieewAdmin(admin.ModelAdmin):
     list_display = ["task", "errander", "errandee", "comment"]
+
+
+
+@admin.register(Support)
+class SupportAdmin(admin.ModelAdmin):
+    list_display = ["user", "category"]
+    list_filter = ["user", "category"]
+    search_fields = ["user", "category"]
     

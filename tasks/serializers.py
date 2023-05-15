@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Task, AcceptTask, TaskReview, Keyword, Bidder, NewBidder
+from .models import Task, AcceptTask, TaskReview, Keyword, Bidder, NewBidder, Support
 from users.models import User
 
 class KeywordsSerializer(serializers.ModelSerializer):
@@ -225,6 +225,13 @@ class MyTotalEarningsSerializer(serializers.ModelSerializer):
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+
+
+
+class TaskSupportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Support
+        fields = ["category", "message", "date_created"]
 
 
     

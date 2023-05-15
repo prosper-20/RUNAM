@@ -417,7 +417,7 @@ class ApiPostTaskAssignmentView(APIView):
         try:
             Bidder.objects.filter(task=Task.objects.get(id=id), user=User.objects.get(username=username).id)
         except Bidder.DoesNotExist:
-            print("The user didn't bid for the task")
+            return Response("The user didn't bid for the task")
         current_task.messenger = User.objects.get(username=username)
         current_task.save()
         serializer = TaskSerializer(current_task)
