@@ -8,6 +8,7 @@ from .serializers import TaskSerializer, AcceptTaskSerializer, TaskReviewSeriali
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from users.models import User
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 
 class TaskView(APIView):
@@ -46,6 +47,9 @@ class TaskView(APIView):
 class ApiTaskView(ListCreateAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = ("name", "sender__username", "description")
+    
 
     def get_context_data(self, request, **kwargs):
         # Call the base implementation first to get a context
@@ -221,6 +225,7 @@ class ApiTaskBidView(APIView):
         serializer.is_valid(raise_exception=True)
         new_bidder_data = serializer.save()
         task.task_bidders.add(new_bidder)
+        task.save()
         return Response(
             {"Success": "Bid for task submitted",
             "user": user.username,
@@ -386,6 +391,43 @@ class ApiMyActivityView(APIView):
     #     serializer = self.serializer_class(data=request.data)
 
 
+class ApiTaskAssignmentView(APIView):
+    '''Retrieves all bidders for a particular task'''
+    def get(self, request, *args, **kwargs):
+        id = kwargs["id"]
+        current_task = Task.objects.get(id=id)
+        bidders = current_task.task_bidders.all()
+        print(bidders)
+        serializer = GetBidderSerializer(bidders, many=True)
+        return Response({
+        "Bidders": serializer.data
+        }, status=status.HTTP_200_OK)
     
+
+
+class ApiPostTaskAssignmentView(APIView):
+    ''' Assigns the task to one of the task bidders'''
+
+    def post(self, request, *args, **kwargs):
+        id = kwargs["id"]
+        username = kwargs["username"]
+        current_task = Task.objects.get(id=id)
+        bidders = current_task.task_bidders.all()
+        print(bidders)
+        try:
+            Bidder.objects.filter(task=Task.objects.get(id=id), user=User.objects.get(username=username).id)
+        except Bidder.DoesNotExist:
+            print("The user didn't bid for the task")
+        current_task.messenger = User.objects.get(username=username)
+        current_task.save()
+        serializer = TaskSerializer(current_task)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+    
+
+
+
+
+
+
 
     

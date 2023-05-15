@@ -25,10 +25,13 @@ class GetNewBidderSerializer(serializers.ModelSerializer):
 
 
 class GetBidderSerializer(serializers.ModelSerializer):
-    # user = serializers.SerializerMethodField("get_bidder_username")
+    user = serializers.SerializerMethodField("get_bidder_username")
     class Meta:
         model = Bidder
         fields = ["user", "message"]
+
+    def get_bidder_username(self, obj):
+        return obj.user.username
     
 
 
@@ -105,7 +108,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     # receiver_name = serializers.SerializerMethodField("get_name_of_receiver")
     # keywords = KeywordsSerializer()
     keywords = serializers.SerializerMethodField("get_actual_keyword")
-    # task_bidders = GetBidderSerializer()
+    task_bidders = serializers.SerializerMethodField("get_task_bidder_details")
     # task_bidders = serializers.SerializerMethodField("get_task_bidders")
     is_active = serializers.ReadOnlyField()
     completed = serializers.ReadOnlyField()
@@ -113,7 +116,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ["id", "name", "description", "image", "bidding_amount", "sender", "sender_name", "keywords", "is_active", "task_bidders",  "completed", "paid"]
+        fields = ["id", "name", "description", "image", "bidding_amount",  "sender", "sender_name", "keywords", "is_active", "task_bidders",  "completed", "paid"]
 
 
     def get_name_of_sender(self, task_sender):
@@ -122,6 +125,11 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     
     def get_actual_keyword(self, obj):
         return KeywordsSerializer(obj.keywords.all(), many=True).data
+    
+    def get_task_bidder_details(self, obj):
+        all_bidders = obj.task_bidders.all()
+        for bidder in all_bidders:
+            return bidder.user.username
     
     # def get_task_bidders(self, obj):
     #     return obj.task_bidders.all()
