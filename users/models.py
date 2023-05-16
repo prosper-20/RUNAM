@@ -7,6 +7,8 @@ from .managers import UserManager
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 import os
+import random
+import string
 
 
 class User(AbstractBaseUser):
@@ -87,10 +89,23 @@ class Profile(models.Model):
 
 
 
-class ReferralCode(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    code = models.CharField(max_length=6)
+def generate_referral_code():
+    # Generate a random referral code
+    letters = string.ascii_uppercase + string.digits
+    code = ''.join(random.choice(letters) for _ in range(6))
+    return code
 
+class Referral(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    code = models.CharField(max_length=6, unique=True, default=generate_referral_code)
+    used = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.user.username} code"
+    
+
+
+
+
+
+    
