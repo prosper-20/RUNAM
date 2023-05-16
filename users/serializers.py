@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 from rest_framework.generics import GenericAPIView
-from .models import Profile
+from .models import Profile, Referral
 User = get_user_model()
 
 
@@ -56,7 +56,12 @@ class UserLoginSerializer(serializers.Serializer):
         if user and user.is_active:
             return user
         raise serializers.ValidationError("Incorrect Credentials")
-    
+
+
+class ReferralSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Referral
+        fields = ["user", "code"]
 
 class ProfileSerializer(CustomUserSerializer):
     """
@@ -64,10 +69,13 @@ class ProfileSerializer(CustomUserSerializer):
     """
 
     user = CustomUserSerializer()
+    my_referral_code = ReferralSerializer()
 
     class Meta:
         model = Profile
-        fields = ("bio", "user")
+        fields = ("bio", "user", "my_referral_code")
+
+    
 
 class ProfileAvatarSerializer(serializers.ModelSerializer):
     """
@@ -77,6 +85,8 @@ class ProfileAvatarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ("avatar",)
+
+
 
 
 
