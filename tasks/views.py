@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from rest_framework import serializers
-from .models import Task, AcceptTask, TaskReview, Bidder, NewBidder
+from .models import Task, AcceptTask, TaskReview, Bidder, NewBidder, Support
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import TaskSerializer, AcceptTaskSerializer, TaskReviewSerializer, GetBidderSerializer, PostBidderSerializer, TaskRequestSerializer, MyTotalEarningsSerializer, TaskDetailSerializer, ChangePasswordSerializer, PostNewBidderSerializer, GetNewBidderSerializer
+from .serializers import TaskSerializer, AcceptTaskSerializer, TaskReviewSerializer, GetBidderSerializer, PostBidderSerializer, TaskRequestSerializer, MyTotalEarningsSerializer, TaskDetailSerializer, ChangePasswordSerializer, PostNewBidderSerializer, GetNewBidderSerializer, TaskSupportSerializer
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from users.models import User
@@ -422,6 +422,20 @@ class ApiPostTaskAssignmentView(APIView):
         current_task.save()
         serializer = TaskSerializer(current_task)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+    
+
+
+class ApiTaskSupport(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request, id, format=None):
+        current_task = Task.objects.get(id=id)
+        current_user = request.user
+        
+        support = Support(user=current_user, task=current_task)
+        serializer = TaskSupportSerializer(support, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
 
 

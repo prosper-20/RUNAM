@@ -17,7 +17,8 @@ from .views import (
     ApiMyPerformanceView,
     ApiMyActivityView,
     ApiTaskAssignmentView,
-    ApiPostTaskAssignmentView
+    ApiPostTaskAssignmentView,
+    ApiTaskSupport
 
 )
 
@@ -37,6 +38,7 @@ urlpatterns = [
     path("<str:id>/reviews/", ApiTaskReview.as_view(), name="task-review"),
     path("<str:id>/bid/", ApiTaskBidView.as_view(), name="task-bid-create"),
     path("<str:id>/bidders/", ApiTaskAssignmentView.as_view(), name="task-bidders"),
+    path("<str:id>/contact-support/", ApiTaskSupport.as_view(), name="contact-support"),
     path("<str:id>/bidders/assign/<str:username>/", ApiPostTaskAssignmentView.as_view(), name="task-assign-bidder"),
     path("<str:id>/", ApiEditTaskView.as_view(), name="task-detail"),
     
