@@ -68,12 +68,18 @@ class ProfileSerializer(CustomUserSerializer):
     Serializer class to serialize the user Profile model
     """
 
-    user = CustomUserSerializer()
-    my_referral_code = ReferralSerializer()
+    # user = CustomUserSerializer()
+    my_referral_code = serializers.SerializerMethodField("get_code")
 
     class Meta:
         model = Profile
-        fields = ("bio", "user", "my_referral_code")
+        fields = ("bio", "phone_number", "my_referral_code")
+
+    def get_code(self, obj):
+        return ReferralSerializer(Referral.objects.get(user=obj.user)).data
+
+    
+
 
     
 

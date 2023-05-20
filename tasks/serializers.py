@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Task, AcceptTask, TaskReview, Keyword, Bidder, NewBidder, Support
 from users.models import User
+from django.utils import timezone
 
 class KeywordsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -109,19 +110,27 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     # keywords = KeywordsSerializer()
     keywords = serializers.SerializerMethodField("get_actual_keyword")
     task_bidders = serializers.SerializerMethodField("get_task_bidder_details")
+    task_url  = serializers.SerializerMethodField("generate_task_url")
     # task_bidders = serializers.SerializerMethodField("get_task_bidders")
     is_active = serializers.ReadOnlyField()
     completed = serializers.ReadOnlyField()
     paid = serializers.ReadOnlyField()
+    status = serializers.SerializerMethodField("get_status")
 
     class Meta:
         model = Task
-        fields = ["id", "name", "description", "image", "bidding_amount",  "sender", "sender_name", "keywords", "is_active", "task_bidders",  "completed", "paid"]
+        fields = ["id", "name", "description", "image", "bidding_amount",  "sender", "sender_name", "keywords", "is_active", "task_bidders",  "completed", "paid", "task_url", "status"]
 
 
     def get_name_of_sender(self, task_sender):
         username = task_sender.sender.username
         return username
+    
+    def get_status(self, obj):
+        current_time = timezone.now()
+        time_difference = current_time - obj.date_updated
+        time_difference_minutes = time_difference.total_seconds() // (60*60)
+        return f"Posted {time_difference_minutes} hours ago"
     
     def get_actual_keyword(self, obj):
         return KeywordsSerializer(obj.keywords.all(), many=True).data
@@ -130,6 +139,11 @@ class TaskDetailSerializer(serializers.ModelSerializer):
         all_bidders = obj.task_bidders.all()
         for bidder in all_bidders:
             return bidder.user.username
+        
+    def generate_task_url(self, obj):
+        return f"http://127.0.0.1:8000/tasks/{obj.id}"
+    
+    
     
     # def get_task_bidders(self, obj):
     #     return obj.task_bidders.all()

@@ -9,7 +9,7 @@ from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpda
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from users.models import User
 from rest_framework.filters import SearchFilter, OrderingFilter
-
+from .permissions import HasPhoneNumberPermission
 
 class TaskView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -47,6 +47,7 @@ class TaskView(APIView):
 class ApiTaskView(ListCreateAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+    permission_classes = [IsAuthenticated, HasPhoneNumberPermission]
     filter_backends = (SearchFilter, OrderingFilter)
     search_fields = ("name", "sender__username", "description")
     
