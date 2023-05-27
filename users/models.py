@@ -78,6 +78,8 @@ class Profile(models.Model):
     bio = models.CharField(max_length=200, blank=True)
     location = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=11)
+    is_complete = models.BooleanField(default=False)
+    otp = models.CharField(max_length=6, null=True, blank=True)
 
 
     def __str__(self):

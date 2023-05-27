@@ -25,7 +25,7 @@ class APIRegisterView(APIView):
         user = serializer.save()
         return Response({
             "message": "Created user successfully",
-            "username": user.username,
+            "success": "Check your email address and activate your account",            "username": user.username,
             "status-code": 200
         }, status=status.HTTP_201_CREATED
 )
