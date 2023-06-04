@@ -367,6 +367,11 @@ class ApiMyActivityView(APIView):
         all_user_tasks = Task.objects.filter(messenger=user)
         total_no_of_tasks = len(all_user_tasks)
         incomplete_tasks = 0
+        if all_user_tasks.count == 0:
+            return Response({"Completion rate": "0%",
+            "Incomplete": 0,
+            "completed": 0}, status=status.HTTP_200_OK)
+
         for task in all_user_tasks:
             if task.completed == True:
                 completed_tasks += 1
