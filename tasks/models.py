@@ -61,8 +61,8 @@ class NewBidder(models.Model):
 
 class TaskReview(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
-    errander = models.ForeignKey(User, related_name="task_errander", on_delete=models.CASCADE)
-    errandee = models.ForeignKey(User, on_delete=models.CASCADE)
+    errander = models.ForeignKey(User, related_name="task_errander", on_delete=models.CASCADE, blank=True, null=True)
+    errandee = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     comment = models.TextField()
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)

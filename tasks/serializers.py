@@ -169,10 +169,19 @@ class AcceptTaskSerializer(serializers.ModelSerializer):
 
 
 class TaskReviewSerializer(serializers.ModelSerializer):
+    task = serializers.SerializerMethodField("get_task_name")
+    errander = serializers.SerializerMethodField("get_errander_name")
     class Meta:
         model = TaskReview
 
         fields = ['task', 'errander', 'errandee', 'comment', 'date_created']
+
+    
+    def get_task_name(self, obj:TaskReview):
+        return obj.task.name
+    
+    def get_errander_name(self, obj):
+        return obj.errander.username
 
 
 

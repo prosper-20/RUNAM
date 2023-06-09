@@ -180,12 +180,35 @@ class ApiTaskReview(APIView):
     def get(self, request, id, format=None):
         try:
             print("request", request)
-            current_task = TaskReview.objects.get(task=id)
+            current_task = Task.objects.get(id=id)
+            all_task_reviews = TaskReview.objects.filter(task=id)
             print(current_task)
+            print(all_task_reviews.count())
         except Task.DoesNotExist:
             return Response({"Error": "Can't find a matching task"}, status=status.HTTP_404_NOT_FOUND)
         
-        serializer = TaskReviewSerializer(current_task)
+        if all_task_reviews.count() == 0:
+            return Response({"No reviews yet": "0",
+                             "Add one": f"http://127.0.0.1:8000/tasks/{id}/reviews/"})
+        
+        serializer = TaskReviewSerializer(all_task_reviews, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+    def post(self, request, id, format=None):
+        try:
+            task = Task.objects.get(id=id)
+            if task.completed == False:
+                return Response({"Error": "You cannot review a task that has not been completed"})
+            elif request.user != task.sender or request.user != task.messenger:
+                return Response({"Error": "You don't have the permission to review this task!!"}, status=status.HTTP_403_FORBIDDEN)
+        except Task.DoesNotExist:
+            return Response({"Error": "Can't find a matching task"})
+        
+        review = TaskReview(task=task, errander=request.user)
+        serializer = TaskReviewSerializer(review, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 
@@ -277,6 +300,7 @@ class ApiTaskRequestView(APIView):
     '''
     def get(self, request, format=None):
         user = request.user
+        print(user)
         all_requested_tasks = Task.objects.filter(sender=user.id)
         serializer = TaskRequestSerializer(all_requested_tasks, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -367,7 +391,7 @@ class ApiMyActivityView(APIView):
         all_user_tasks = Task.objects.filter(messenger=user)
         total_no_of_tasks = len(all_user_tasks)
         incomplete_tasks = 0
-        if all_user_tasks.count == 0:
+        if all_user_tasks.count() == 0:
             return Response({"Completion rate": "0%",
             "Incomplete": 0,
             "completed": 0}, status=status.HTTP_200_OK)
@@ -424,6 +448,13 @@ class ApiPostTaskAssignmentView(APIView):
             Bidder.objects.filter(task=Task.objects.get(id=id), user=User.objects.get(username=username).id)
         except Bidder.DoesNotExist:
             return Response("The user didn't bid for the task")
+        except User.DoesNotExist:
+            return Response({"Error": "The user doesn't exist"})
+        
+
+        if username == current_task.sender.username:
+            return Response({"Error": "You caanot accept your own tasks"})
+
         current_task.messenger = User.objects.get(username=username)
         current_task.save()
         serializer = TaskSerializer(current_task)
