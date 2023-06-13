@@ -81,9 +81,10 @@ class TaskSerializer(serializers.ModelSerializer):
     is_active = serializers.ReadOnlyField()
     completed = serializers.ReadOnlyField()
     paid = serializers.ReadOnlyField()
+    category = serializers.StringRelatedField()
     class Meta:
         model = Task
-        fields = ["id", "name", "description", "image", "bidding_amount", "sender", "sender_name", "keywords", "is_active",  "completed", "paid"]
+        fields = ["id", "name", "description", "category", "image", "bidding_amount", "sender", "sender_name", "keywords", "is_active",  "completed", "paid"]
 
 
     def get_name_of_sender(self, task_sender):

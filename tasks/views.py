@@ -49,7 +49,7 @@ class ApiTaskView(ListCreateAPIView):
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated, HasPhoneNumberPermission]
     filter_backends = (SearchFilter, OrderingFilter)
-    search_fields = ("name", "sender__username", "description")
+    search_fields = ("name", "sender__username", "category__name", "description")
     
 
     def get_context_data(self, request, **kwargs):
