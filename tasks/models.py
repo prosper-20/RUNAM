@@ -23,7 +23,6 @@ class Category(models.Model):
     
 
 
-
 class Task(models.Model):
     id = models.UUIDField(primary_key = True, default = uuid.uuid4, editable = False)
     name = models.CharField(max_length=200)
@@ -111,3 +110,14 @@ class Support(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+
+
+class Shop(models.Model):
+    name = models.CharField(max_length=100)
+    tasks = models.ManyToManyField(Task)
+    subscribers = models.ManyToManyField(User)
+    rating = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.name
