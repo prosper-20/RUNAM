@@ -115,9 +115,12 @@ class Support(models.Model):
 
 class Shop(models.Model):
     name = models.CharField(max_length=100)
+    slug = models.SlugField()
+    description = models.TextField()
+    location = models.CharField(max_length=100)
     tasks = models.ManyToManyField(Task)
     subscribers = models.ManyToManyField(User)
-    rating = models.CharField(max_length=10)
+    rating = models.CharField(max_length=10, default=10)
 
     def __str__(self):
         return self.name

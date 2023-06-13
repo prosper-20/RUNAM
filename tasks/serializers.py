@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Task, AcceptTask, TaskReview, Keyword, Bidder, NewBidder, Support
+from .models import Task, AcceptTask, TaskReview, Keyword, Bidder, NewBidder, Support, Shop
 from users.models import User
 from django.utils import timezone
 
@@ -7,6 +7,13 @@ class KeywordsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Keyword
         fields = ["name"]
+
+
+
+class ShopSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Shop
+        fields = ["name", "slug", "description", "tasks", "subscribers", "rating"]
 
 
 class PostNewBidderSerializer(serializers.ModelSerializer):

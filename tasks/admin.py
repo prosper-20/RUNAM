@@ -1,5 +1,13 @@
 from django.contrib import admin
-from .models import Task, TaskReview, Keyword, Bidder, NewBidder, Support, Category
+from .models import Task, TaskReview, Keyword, Bidder, NewBidder, Support, Category, Shop
+
+
+@admin.register(Shop)
+class ShopAmin(admin.ModelAdmin):
+    list_display = ["name", "slug", "rating"]
+    prepopulated_fields = {'slug': ('name',)}
+
+
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
