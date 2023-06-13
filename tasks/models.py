@@ -118,8 +118,8 @@ class Shop(models.Model):
     slug = models.SlugField()
     description = models.TextField()
     location = models.CharField(max_length=100)
-    tasks = models.ManyToManyField(Task)
-    subscribers = models.ManyToManyField(User)
+    tasks = models.ManyToManyField(Task, blank=True)
+    subscribers = models.ManyToManyField(User, blank=True)
     rating = models.CharField(max_length=10, default=10)
 
     def __str__(self):

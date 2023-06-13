@@ -10,10 +10,7 @@ class KeywordsSerializer(serializers.ModelSerializer):
 
 
 
-class ShopSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Shop
-        fields = ["name", "slug", "description", "tasks", "subscribers", "rating"]
+
 
 
 class PostNewBidderSerializer(serializers.ModelSerializer):
@@ -78,6 +75,9 @@ class PostBidderSerializer(serializers.ModelSerializer):
 
 
 
+
+
+
 class TaskSerializer(serializers.ModelSerializer):
     sender_name = serializers.SerializerMethodField("get_name_of_sender")
     # url = serializers.HyperlinkedIdentityField(view_name='task-detail', lookup_field='id')
@@ -108,6 +108,30 @@ class TaskSerializer(serializers.ModelSerializer):
     # def get_name_of_receiver(self, task_receiver):
     #     username = task_receiver.receiver.username
     #     return  username'''
+
+
+class ShopTaskSerializer(serializers.ModelSerializer):
+    more_details = serializers.SerializerMethodField("get_detail_of_tasks")
+    class Meta:
+        model = Task
+        fields = ["id", "name", "more_details"]
+
+    
+    def get_detail_of_tasks(self, obj):
+        return f"http://127.0.0.1:800/tasks/{obj.id}"
+
+    
+   
+    
+
+class ShopSerializer(serializers.ModelSerializer):
+    tasks = serializers.SerializerMethodField("get_brief_info_of_tasks")
+    class Meta:
+        model = Shop
+        fields = ["name", "slug", "description", "tasks", "subscribers", "rating"]
+
+    def get_brief_info_of_tasks(self, obj:Shop):
+        return ShopTaskSerializer(obj.tasks.all(), many=True).data
 
 
 

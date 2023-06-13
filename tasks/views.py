@@ -1,15 +1,31 @@
 from django.shortcuts import render
 from rest_framework import serializers
-from .models import Task, AcceptTask, TaskReview, Bidder, NewBidder, Support
+from .models import Task, AcceptTask, TaskReview, Bidder, NewBidder, Support, Shop
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import TaskSerializer, AcceptTaskSerializer, TaskReviewSerializer, GetBidderSerializer, PostBidderSerializer, TaskRequestSerializer, MyTotalEarningsSerializer, TaskDetailSerializer, ChangePasswordSerializer, PostNewBidderSerializer, GetNewBidderSerializer, TaskSupportSerializer
+from .serializers import TaskSerializer, AcceptTaskSerializer, TaskReviewSerializer, GetBidderSerializer, PostBidderSerializer, TaskRequestSerializer, MyTotalEarningsSerializer, TaskDetailSerializer, ChangePasswordSerializer, PostNewBidderSerializer, GetNewBidderSerializer, TaskSupportSerializer, ShopSerializer
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from users.models import User
 from rest_framework.filters import SearchFilter, OrderingFilter
 from .permissions import HasPhoneNumberPermission
+
+
+class APITaskShopView(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = ShopSerializer
+
+    def get(self, request, format=None):
+        all_shops = Shop.objects.all()
+        serializer = ShopSerializer(all_shops, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class ApiCreateTaskShopView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    
 
 class TaskView(APIView):
     permission_classes = (IsAuthenticated,)

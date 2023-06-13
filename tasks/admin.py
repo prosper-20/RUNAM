@@ -4,7 +4,7 @@ from .models import Task, TaskReview, Keyword, Bidder, NewBidder, Support, Categ
 
 @admin.register(Shop)
 class ShopAmin(admin.ModelAdmin):
-    list_display = ["name", "slug", "rating"]
+    list_display = ["name", "location", "rating"]
     prepopulated_fields = {'slug': ('name',)}
 
 

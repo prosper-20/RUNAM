@@ -18,7 +18,8 @@ from .views import (
     ApiMyActivityView,
     ApiTaskAssignmentView,
     ApiPostTaskAssignmentView,
-    ApiTaskSupport
+    ApiTaskSupport,
+    APITaskShopView
 
 )
 
@@ -30,6 +31,7 @@ urlpatterns = [
     path("my-errands/", ApiTaskErrandSerializer.as_view(), name="errands"),
     path("my-earnings/", ApiMyTotalEarningView.as_view(), name="my-earnings"),
     path("my-performace/", ApiMyPerformanceView.as_view(), name="my-performance"),
+    path("shop/all/", APITaskShopView.as_view(), name="tasks-shop"),
     path("history/",  ApiTaskHistory.as_view(), name="tasks-history"),
     path("accept/", AcceptTaskView.as_view(), name="accept-task"),
     path("available/", ApiAvailableTasksView.as_view(), name="available-tasks"),
