@@ -9,10 +9,14 @@ class Keyword(models.Model):
 
     def __str__(self):
         return self.name 
-    
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+    slug = models.SlugField()
 
+    def __str__(self):
+        return self.name
     
 
 
@@ -21,6 +25,7 @@ class Task(models.Model):
     id = models.UUIDField(primary_key = True, default = uuid.uuid4, editable = False)
     name = models.CharField(max_length=200)
     description = models.TextField()
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
     keywords = models.ManyToManyField(Keyword, blank=True, null=True)
     bidding_amount = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to="task_images", blank=True, null=True)
