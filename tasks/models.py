@@ -114,13 +114,15 @@ class Support(models.Model):
 
 
 class Shop(models.Model):
+    owner = models.ForeignKey(User, related_name="the_shop_owner", on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     slug = models.SlugField()
     description = models.TextField()
     location = models.CharField(max_length=100)
-    tasks = models.ManyToManyField(Task, blank=True)
+    tasks = models.ManyToManyField(Task, related_name="shop_subscribers", blank=True)
     subscribers = models.ManyToManyField(User, blank=True)
     rating = models.CharField(max_length=10, default=10)
+    is_verified = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

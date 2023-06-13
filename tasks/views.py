@@ -24,7 +24,24 @@ class APITaskShopView(APIView):
 
 class ApiCreateTaskShopView(APIView):
     permission_classes = [IsAuthenticated]
-    
+    serializer_class = ShopSerializer
+
+    def post(self, request, format=None):
+        user = request.user
+        new_shop = Shop(owner=user)
+        serializer = ShopSerializer(new_shop, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        new_shop = serializer.save()
+        print(new_shop)
+        return Response({
+            "Sucess": "Your virtual shop has been created, kindly upload supporting" 
+            " business documents to enable you upload tasks...Documents include: CAC Certificate, Certificate of Incorporation etc",
+            "name": new_shop.name,
+            "owner": new_shop.owner.username,
+            "description": new_shop.description,
+            "location": new_shop.location
+        }, status=status.HTTP_201_CREATED)
+
     
 
 class TaskView(APIView):
