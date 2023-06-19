@@ -126,12 +126,20 @@ class ShopTaskSerializer(serializers.ModelSerializer):
 
 class ShopSerializer(serializers.ModelSerializer):
     tasks = serializers.SerializerMethodField("get_brief_info_of_tasks")
+    subscribers = serializers.SerializerMethodField("get_subscribers_details")
     class Meta:
         model = Shop
         fields = ["name", "slug", "description", "tasks", "subscribers", "rating"]
 
     def get_brief_info_of_tasks(self, obj:Shop):
         return ShopTaskSerializer(obj.tasks.all(), many=True).data
+    
+    def get_subscribers_details(self, obj):
+        data = {}
+        for subscriber in obj.subscribers.all():
+            updated_dict = {"name": subscriber.username, "email": subscriber.email}
+            data.update(updated_dict)
+        return data
 
 
 

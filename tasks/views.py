@@ -26,25 +26,63 @@ class ApiTaskShopDetailView(APIView):
     permission_classes = [AllowAny]
     serializer_class = ShopSerializer
 
-    def get(self, slug, request, format=None):
+    def get(self, request, slug, format=None):
         try:
             shop = Shop.objects.get(slug=slug)
         except Shop.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = ShopSerializer(shop, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = ShopSerializer(shop)
+        new = dict(serializer.data)
+        user = request.user
+        if user not in shop.subscribers.all():
+            return Response({
+            "name": new["name"],
+            "slug": new["slug"],
+            "tasks": new["tasks"],
+            "description": new["description"],
+            "tasks": new["tasks"],
+            "rating": new["rating"],
+            "subscribe": f"http://127.0.0.1:8000/shop/{slug}/subscribe/"}, status=status.HTTP_200_OK)
+        elif user == shop.owner:
+            return Response({
+            "name": new["name"],
+            "slug": new["slug"],
+            "tasks": new["tasks"],
+            "description": new["description"],
+            "tasks": new["tasks"],
+            "subscribers": new["subscribers"],
+            "rating": new["rating"],
+        })
+
+        return Response({
+            "name": new["name"],
+            "slug": new["slug"],
+            "tasks": new["tasks"],
+            "description": new["description"],
+            "tasks": new["tasks"],
+            "rating": new["rating"],
+        })
+        
+    
+        # return Response(serializer.data, status=status.HTTP_200_OK)
+    
     
 
-    def put(self, slug, request, fomrmat=None):
+    def put(self, request, slug, format=None):
         try:
             shop = Shop.objects.get(slug=slug)
         except Shop.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ShopSerializer(shop, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
     
-    def delete(self, slug, request, format=None):
+    def delete(self, request, slug, format=None):
         shop = Shop.objects.get(slug=slug)
+        user = request.user
+        if user != shop.owner:
+            return Response({"Error": "You do not have the permission to perform this action"})
         shop.delete()
         return Response({"Success": "Post delete successful"}, status=status.HTTP_204_NO_CONTENT)
 
@@ -70,6 +108,21 @@ class ApiCreateTaskShopView(APIView):
             "description": new_shop.description,
             "location": new_shop.location
         }, status=status.HTTP_201_CREATED)
+
+
+class ApiCreateTaskShopSubscriber(APIView):
+    permission_classes = [IsAuthenticated]
+    '''
+    This view enables users to subscribe to a shop
+    for tasks.
+    '''
+    def post(self, request, slug, format=None):
+        current_shop = Shop.objects.get(slug=slug)
+        user = request.user
+        current_shop.subscribers.add(user)
+        return Response({"Success": f"Thnak you for subscribing to {current_shop.name}"})
+    
+
 
     
 

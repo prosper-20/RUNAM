@@ -21,7 +21,8 @@ from .views import (
     ApiTaskSupport,
     APITaskShopView,
     ApiCreateTaskShopView,
-    ApiTaskShopDetailView
+    ApiTaskShopDetailView,
+    ApiCreateTaskShopSubscriber
 
 )
 
@@ -35,6 +36,7 @@ urlpatterns = [
     path("my-performace/", ApiMyPerformanceView.as_view(), name="my-performance"),
     path("shop/all/", APITaskShopView.as_view(), name="tasks-shop"),
     path("shop/<slug:slug>/", ApiTaskShopDetailView.as_view(), name="shop-detail"),
+    path("shop/<slug:slug>/subscribe/", ApiCreateTaskShopSubscriber.as_view(), name="shop-sunscriber"),
     path("shop/create/", ApiCreateTaskShopView.as_view(), name="create-shop"),
     path("history/",  ApiTaskHistory.as_view(), name="tasks-history"),
     path("accept/", AcceptTaskView.as_view(), name="accept-task"),
@@ -47,9 +49,6 @@ urlpatterns = [
     path("<str:id>/contact-support/", ApiTaskSupport.as_view(), name="contact-support"),
     path("<str:id>/bidders/assign/<str:username>/", ApiPostTaskAssignmentView.as_view(), name="task-assign-bidder"),
     path("<str:id>/", ApiEditTaskView.as_view(), name="task-detail"),
-    
-    
-    
     
     
 ]
