@@ -22,6 +22,35 @@ class APITaskShopView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 
+class ApiTaskShopDetailView(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = ShopSerializer
+
+    def get(self, slug, request, format=None):
+        try:
+            shop = Shop.objects.get(slug=slug)
+        except Shop.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = ShopSerializer(shop, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+    def put(self, slug, request, fomrmat=None):
+        try:
+            shop = Shop.objects.get(slug=slug)
+        except Shop.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = ShopSerializer(shop, data=request.data, partial=True)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+    
+    def delete(self, slug, request, format=None):
+        shop = Shop.objects.get(slug=slug)
+        shop.delete()
+        return Response({"Success": "Post delete successful"}, status=status.HTTP_204_NO_CONTENT)
+
+
+    
+
 class ApiCreateTaskShopView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ShopSerializer
