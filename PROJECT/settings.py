@@ -30,7 +30,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'users.apps.UsersConfig',
     'payments.apps.PaymentsConfig',
     'rest_framework',
@@ -49,7 +50,13 @@ INSTALLED_APPS = [
     'tasks.apps.TasksConfig',
     "drf_spectacular", # new
     "social_django",
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
+
+SITE_ID = 1
 
 AUTH_USER_MODEL = "users.User"
 
@@ -105,7 +112,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'social_django.context_processors.backends'
+                'social_django.context_processors.backends',
             ],
         },
     },
@@ -170,22 +177,25 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+
 AUTHENTICATION_BACKENDS = [
-    'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+    
 ]
 
 
-LOGIN_URL = "login2"
-LOGIN_REDIRECT_URL = "web-home"
-LOGOUT_URL = "logout"
-LOGOUT_REDIRECT_URL = "login2"
+# LOGIN_URL = "login2"
+LOGIN_REDIRECT_URL = "task"
+LOGOUT_URL = "logout-user"
+LOGOUT_REDIRECT_URL = "task"
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = "498484421143-cpiaeu1lit5posdjr0omtm4vrrpo4iao.apps.googleusercontent.com"
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "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"
+# SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = "498484421143-cpiaeu1lit5posdjr0omtm4vrrpo4iao.apps.googleusercontent.com"
+# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "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"
 
 
-SOCIAL_AUTH_URL_NAMESPACE = 'social'
+# SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 
 DEFAULT_FROM_EMAIL = "edwardprosper001@gmail.com"
@@ -196,4 +206,12 @@ SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 SENDGRID_API_KEY = config("NEW_SENDGRID_API_KEY")
 
 
-
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         'APP': {
+#             'client_id': '123',
+#             'secret': '456',
+#             'key': ''
+#         }
+#     }
+# }

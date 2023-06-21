@@ -126,3 +126,19 @@ class Shop(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ShopImages(models.Model):
+    image = models.FileField(upload_to="shop_images")
+
+class ShopDocuments(models.Model):
+    document = models.FileField(upload_to="shop_documents")
+
+class ShopProfile(models.Model):
+    shop = models.OneToOneField(Shop, on_delete=models.CACSCADE)
+    image = models.ImageField(blank=True, null=True)
+    other_images = models.ManyToManyField(ShopImages, blank=True)
+    documents = models.ManyToManyField(ShopDocuments)
+
+    def __str__(self):
+        return f"{self.shop.name} profile"
