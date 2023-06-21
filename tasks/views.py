@@ -18,7 +18,7 @@ from .serializers import (
     GetNewBidderSerializer, 
     TaskSupportSerializer, 
     ShopSerializer,
-    ShopTaskSerializer)
+    CreateShopTaskSerializer)
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from users.models import User
@@ -138,6 +138,7 @@ class ApiCreateTaskShopSubscriber(APIView):
     
 
 class ApiShopCreateTaskView(APIView):
+    permission_classes = [IsAuthenticated]
     '''
     This view allows shop owners to create tasks
     that'll be visible to other RUNAM users
@@ -152,12 +153,10 @@ class ApiShopCreateTaskView(APIView):
                              "link": "complete_profile_link"}, status=status.HTTP_401_UNAUTHORIZED)
         
         new_shop_task = Task(shop=current_shop, sender=current_shop.owner)
-        serializer = ShopTaskSerializer(new_shop_task, data=request.data)
+        serializer = CreateShopTaskSerializer(new_shop_task, data=request.data)
         serializer.is_valid(raise_exception=True)
-        new = serializer.save()
-        new = dict(new)
-        new2 = {"Success": "Task has been created successfully"}
-        return Response(new2.update(new), status=status.HTTP_201_CREATED)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
      
 
 

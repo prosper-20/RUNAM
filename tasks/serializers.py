@@ -74,7 +74,7 @@ class PostBidderSerializer(serializers.ModelSerializer):
 
 
 
-class ShopTaskSerializer(serializers.ModelSerializer):
+class CreateShopTaskSerializer(serializers.ModelSerializer):
     sender_name = serializers.SerializerMethodField("get_name_of_sender")
     # url = serializers.HyperlinkedIdentityField(view_name='task-detail', lookup_field='id')
     # receiver_name = serializers.SerializerMethodField("get_name_of_receiver")
@@ -85,9 +85,10 @@ class ShopTaskSerializer(serializers.ModelSerializer):
     completed = serializers.ReadOnlyField()
     paid = serializers.ReadOnlyField()
     category = serializers.StringRelatedField()
+    shop = serializers.StringRelatedField()
     class Meta:
         model = Task
-        fields = ["id", "name", "description", "category", "image", "bidding_amount", "sender_name", "keywords", "is_active",  "completed", "paid"]
+        fields = ["id", "name", "description", "category", "image", "bidding_amount", "sender_name", "shop", "keywords", "is_active",  "completed", "paid"]
 
 
     def get_name_of_sender(self, obj):

@@ -23,6 +23,7 @@ class HasPhoneNumberPermission(BasePermission):
         if check == False:
             raise PermissionDenied(detail=self.message)
         return bool(request.user.profile.phone_number)
+    
         
 
 
