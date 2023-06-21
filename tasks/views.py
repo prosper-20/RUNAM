@@ -4,7 +4,21 @@ from .models import Task, AcceptTask, TaskReview, Bidder, NewBidder, Support, Sh
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import TaskSerializer, AcceptTaskSerializer, TaskReviewSerializer, GetBidderSerializer, PostBidderSerializer, TaskRequestSerializer, MyTotalEarningsSerializer, TaskDetailSerializer, ChangePasswordSerializer, PostNewBidderSerializer, GetNewBidderSerializer, TaskSupportSerializer, ShopSerializer
+from .serializers import (
+    TaskSerializer, 
+    AcceptTaskSerializer, 
+    TaskReviewSerializer, 
+    GetBidderSerializer, 
+    PostBidderSerializer, 
+    TaskRequestSerializer, 
+    MyTotalEarningsSerializer, 
+    TaskDetailSerializer, 
+    ChangePasswordSerializer, 
+    PostNewBidderSerializer, 
+    GetNewBidderSerializer, 
+    TaskSupportSerializer, 
+    ShopSerializer,
+    ShopTaskSerializer)
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from users.models import User
@@ -122,6 +136,30 @@ class ApiCreateTaskShopSubscriber(APIView):
         current_shop.subscribers.add(user)
         return Response({"Success": f"Thnak you for subscribing to {current_shop.name}"})
     
+
+class ApiShopCreateTaskView(APIView):
+    '''
+    This view allows shop owners to create tasks
+    that'll be visible to other RUNAM users
+    '''
+    def post(self, request, slug, format=None):
+        current_shop = Shop.objects.get(slug=slug)
+        current_user = request.user
+        if current_shop.owner != current_user:
+            return Response({"Error": "You don't have the permission to performm this action"}, status=status.HTTP_401_UNAUTHORIZED)
+        elif current_shop.is_verified == False:
+            return Response({"Error": "You cannot post a task until you complete your shop profile",
+                             "link": "complete_profile_link"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        new_shop_task = Task(shop=current_shop, sender=current_shop.owner)
+        serializer = ShopTaskSerializer(new_shop_task, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        new = serializer.save()
+        new = dict(new)
+        new2 = {"Success": "Task has been created successfully"}
+        return Response(new2.update(new), status=status.HTTP_201_CREATED)
+     
+
 
 
     

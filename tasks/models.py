@@ -41,6 +41,7 @@ class Task(models.Model):
     completed = models.BooleanField(default=False)
     paid = models.BooleanField(default=False)
     messenger = models.ForeignKey(User, related_name="the_task_messenger", on_delete=models.CASCADE, blank=True, null=True)
+    shop = models.ForeignKey("Shop", on_delete=models.CASCADE, blank=True, null=True)
 
 
     def __str__(self):

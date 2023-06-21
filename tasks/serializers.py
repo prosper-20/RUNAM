@@ -74,6 +74,28 @@ class PostBidderSerializer(serializers.ModelSerializer):
 
 
 
+class ShopTaskSerializer(serializers.ModelSerializer):
+    sender_name = serializers.SerializerMethodField("get_name_of_sender")
+    # url = serializers.HyperlinkedIdentityField(view_name='task-detail', lookup_field='id')
+    # receiver_name = serializers.SerializerMethodField("get_name_of_receiver")
+    # keywords = KeywordsSerializer()
+    keywords = serializers.SerializerMethodField("get_actual_keyword")
+    # task_bidders = serializers.SerializerMethodField("get_task_bidders")
+    is_active = serializers.ReadOnlyField()
+    completed = serializers.ReadOnlyField()
+    paid = serializers.ReadOnlyField()
+    category = serializers.StringRelatedField()
+    class Meta:
+        model = Task
+        fields = ["id", "name", "description", "category", "image", "bidding_amount", "sender_name", "keywords", "is_active",  "completed", "paid"]
+
+
+    def get_name_of_sender(self, obj):
+        shop_name = obj.shop.name
+        return shop_name
+    
+    def get_actual_keyword(self, obj):
+        return KeywordsSerializer(obj.keywords.all(), many=True).data
 
 
 
@@ -129,7 +151,7 @@ class ShopSerializer(serializers.ModelSerializer):
     subscribers = serializers.SerializerMethodField("get_subscribers_details")
     class Meta:
         model = Shop
-        fields = ["name", "slug", "description", "tasks", "subscribers", "rating"]
+        fields = ["name", "slug", "description", "location", "tasks", "subscribers", "rating"]
 
     def get_brief_info_of_tasks(self, obj:Shop):
         return ShopTaskSerializer(obj.tasks.all(), many=True).data
