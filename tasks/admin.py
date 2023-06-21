@@ -1,5 +1,14 @@
 from django.contrib import admin
-from .models import Task, TaskReview, Keyword, Bidder, NewBidder, Support, Category, Shop
+from .models import Task, TaskReview, Keyword, Bidder, NewBidder, Support, Category, Shop, ShopProfile, ShopImages, ShopDocuments
+
+
+class ShopProfileAdmin(admin.ModelAdmin):
+    list_display = ["shop"]
+    search_fields = ["shop"]
+    list_filter = ["shop"]
+
+
+admin.site.register(ShopProfile, ShopProfileAdmin)
 
 
 @admin.register(Shop)

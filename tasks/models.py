@@ -135,7 +135,7 @@ class ShopDocuments(models.Model):
     document = models.FileField(upload_to="shop_documents")
 
 class ShopProfile(models.Model):
-    shop = models.OneToOneField(Shop, on_delete=models.CACSCADE)
+    shop = models.OneToOneField(Shop, on_delete=models.CASCADE)
     image = models.ImageField(blank=True, null=True)
     other_images = models.ManyToManyField(ShopImages, blank=True)
     documents = models.ManyToManyField(ShopDocuments)
