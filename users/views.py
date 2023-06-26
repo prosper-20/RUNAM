@@ -14,7 +14,7 @@ from . import serializers
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.generics import RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework import permissions
 
 
@@ -113,7 +113,16 @@ class UserAPIView(RetrieveUpdateAPIView):
     def get_object(self):
         return self.request.user
 
-class UserProfileAPIView(RetrieveUpdateAPIView):
+
+
+
+class PartialUpdateRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    def put(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
+
+
+class UserProfileAPIView(PartialUpdateRetrieveUpdateDestroyAPIView):
     """
     Get, Update user profile
     """
@@ -124,6 +133,8 @@ class UserProfileAPIView(RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user.profile
+    
+    
 
 class UserAvatarAPIView(RetrieveUpdateAPIView):
     """
@@ -136,6 +147,19 @@ class UserAvatarAPIView(RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user.profile
+    
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        # Customize the update logic here if needed
+        # For example, you can perform additional validations or modify fields before saving
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        data_1 = dict(serializer.data)
+        data_2 = {"Message": "Profile has been updated successfully!"}
+        data_2.update(data_1)
+        return Response(data_2, status=status.HTTP_202_ACCEPTED)
     
 
 

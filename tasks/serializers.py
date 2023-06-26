@@ -191,8 +191,8 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     def get_status(self, obj):
         current_time = timezone.now()
         time_difference = current_time - obj.date_updated
-        time_difference_minutes = time_difference.total_seconds() // (60*60)
-        return f"Posted {time_difference_minutes} hours ago"
+        time_difference_minutes = time_difference.total_seconds() // (60*60*24)
+        return f"Posted {time_difference_minutes} days ago"
     
     def get_actual_keyword(self, obj):
         return KeywordsSerializer(obj.keywords.all(), many=True).data

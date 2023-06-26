@@ -16,7 +16,7 @@ from rest_framework.exceptions import PermissionDenied
 
 
 class HasPhoneNumberPermission(BasePermission):
-    message = "You must complete your profile to create tasks or run errands."
+    message = {"You must complete your profile to create, view or accept tasks, click on this link: http://127.0.0.1:8000/users/profile/"}
     def has_permission(self, request, view):
         
         check = bool(request.user.profile.phone_number)

@@ -60,6 +60,7 @@ class UserLoginSerializer(serializers.Serializer):
 
 
 class ReferralSerializer(serializers.ModelSerializer):
+    user = CustomUserSerializer()
     class Meta:
         model = Referral
         fields = ["user", "code"]

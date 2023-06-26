@@ -588,7 +588,9 @@ class ApiTaskAssignmentView(APIView):
 
 
 class ApiPostTaskAssignmentView(APIView):
-    ''' Assigns the task to one of the task bidders'''
+    ''' Assigns the task to one of the task bidders
+    Once a task is assigned to a user, the task field
+    picked_up should change to True'''
 
     def post(self, request, *args, **kwargs):
         id = kwargs["id"]
@@ -608,9 +610,11 @@ class ApiPostTaskAssignmentView(APIView):
             return Response({"Error": "You caanot accept your own tasks"})
 
         current_task.messenger = User.objects.get(username=username)
+        current_task.picked_up = True
         current_task.save()
         serializer = TaskSerializer(current_task)
-        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        data = {"Success": f"You have successfully assigned the task to {username}"}
+        return Response(data, status=status.HTTP_202_ACCEPTED)
     
 
 
