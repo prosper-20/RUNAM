@@ -100,7 +100,6 @@ class CreateShopTaskSerializer(serializers.ModelSerializer):
 
 
 
-
 class TaskSerializer(serializers.ModelSerializer):
     sender_name = serializers.SerializerMethodField("get_name_of_sender")
     # url = serializers.HyperlinkedIdentityField(view_name='task-detail', lookup_field='id')
