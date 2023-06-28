@@ -64,6 +64,9 @@ SITE_ID = 1
 AUTH_USER_MODEL = "users.User"
 
 
+ASGI_APPLICATION = 'PROJECT.asgi.application'
+
+
 # JWT_AUTH = {
 #     'JWT_VERIFY': True,
 #     'JWT_VERIFY_EXPIRATION': True,
