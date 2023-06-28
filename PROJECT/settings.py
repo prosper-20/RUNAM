@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'users.apps.UsersConfig',
     'payments.apps.PaymentsConfig',
+    'chat.apps.ChatConfig',
+    'channels',
     'rest_framework',
     'rest_framework_jwt',
     'tasks.apps.TasksConfig',
@@ -54,6 +56,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+
 ]
 
 SITE_ID = 1
