@@ -113,7 +113,7 @@ class TaskSerializer(serializers.ModelSerializer):
     category = serializers.StringRelatedField()
     class Meta:
         model = Task
-        fields = ["id", "name", "description", "category", "image", "bidding_amount", "sender", "sender_name", "keywords", "is_active",  "completed", "paid"]
+        fields = ["id", "name", "description", "category", "image", "bidding_amount", "sender", "sender_name", "keywords", "is_active", "picked_up",  "completed", "paid"]
 
 
     def get_name_of_sender(self, task_sender):

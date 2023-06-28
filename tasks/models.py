@@ -28,7 +28,7 @@ class Task(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
-    keywords = models.ManyToManyField(Keyword, blank=True, null=True)
+    keywords = models.ManyToManyField(Keyword, blank=True)
     bidding_amount = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to="task_images", blank=True, null=True)
     sender =models.ForeignKey(User, related_name="sender", on_delete=models.CASCADE)

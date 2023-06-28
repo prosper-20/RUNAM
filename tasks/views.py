@@ -172,7 +172,7 @@ class TaskView(APIView):
     
     def get(self, request, format=None):
         # queryset = Task.objects.filter(is_active=False)
-        queryset = Task.objects.exclude(sender=self.request.user)
+        queryset = Task.objects.exclude(sender=self.request.user) | Task.objects.exclude(picked_up=True)
         serializer = TaskSerializer(queryset, many=True)
         return Response(serializer.data, request.user,  status=status.HTTP_200_OK)
     
@@ -590,7 +590,8 @@ class ApiTaskAssignmentView(APIView):
 class ApiPostTaskAssignmentView(APIView):
     ''' Assigns the task to one of the task bidders
     Once a task is assigned to a user, the task field
-    picked_up should change to True'''
+    picked_up should change to True. The task also should stop 
+    showing for others'''
 
     def post(self, request, *args, **kwargs):
         id = kwargs["id"]
