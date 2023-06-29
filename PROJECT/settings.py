@@ -75,7 +75,7 @@ ASGI_APPLICATION = 'PROJECT.asgi.application'
 # }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=50),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 
@@ -221,3 +221,13 @@ SENDGRID_API_KEY = config("NEW_SENDGRID_API_KEY")
 #         }
 #     }
 # }
+
+
+CHANNEL_LAYERS = {
+    'default': {
+    'BACKEND': 'channels_redis.core.RedisChannelLayer',
+    'CONFIG': {
+    'hosts': [('127.0.0.1', 6379)],
+    },
+    },
+}
