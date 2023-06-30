@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Task, AcceptTask, TaskReview, Keyword, Bidder, NewBidder, Support, Shop
+from .models import Task, AcceptTask, TaskReview, Keyword, Bidder, NewBidder, Support, Shop, TaskImages
 from users.models import User
 from django.utils import timezone
 
@@ -99,6 +99,11 @@ class CreateShopTaskSerializer(serializers.ModelSerializer):
         return KeywordsSerializer(obj.keywords.all(), many=True).data
 
 
+class TaskImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TaskImages
+        fields = ["task", "image"]
+
 
 class TaskSerializer(serializers.ModelSerializer):
     sender_name = serializers.SerializerMethodField("get_name_of_sender")
@@ -111,9 +116,21 @@ class TaskSerializer(serializers.ModelSerializer):
     completed = serializers.ReadOnlyField()
     paid = serializers.ReadOnlyField()
     category = serializers.StringRelatedField()
+    images = TaskImageSerializer(many=True, read_only=True)
+    uploaded_images = serializers.ListField(
+        child=serializers.ImageField(max_length=1000000, allow_empty_file=False, use_url=False), write_only=True)
+    
     class Meta:
         model = Task
-        fields = ["id", "name", "description", "category", "image", "bidding_amount", "sender", "sender_name", "keywords", "is_active", "picked_up",  "completed", "paid"]
+        fields = ["id", "name", "description", "category", "image", "bidding_amount", "sender_name", "keywords", "is_active", "picked_up",  "completed", "paid", "images", "uploaded_images"]
+
+
+    def create(self, validated_data):
+        uploaded_images = validated_data.pop("uploaded_images")
+        task = Task.objects.create(**validated_data)
+        for image in uploaded_images:
+            TaskImages.objects.create(task=task, image=image)
+        return task
 
 
     def get_name_of_sender(self, task_sender):
