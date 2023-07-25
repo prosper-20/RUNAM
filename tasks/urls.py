@@ -41,7 +41,7 @@ urlpatterns = [
     path("shop/<slug:slug>/subscribe/", ApiCreateTaskShopSubscriber.as_view(), name="shop-sunscriber"),
     path("shop/<slug:slug>/create-task/", ApiShopCreateTaskView.as_view(), name="create-shop-task"),
     path("shop/<slug:slug>/", ApiTaskShopDetailView.as_view(), name="shop-detail"),
-    #  URL END
+    #  URLS FOR TASK
     path("history/",  ApiTaskHistory.as_view(), name="tasks-history"),
     path("accept/", AcceptTaskView.as_view(), name="accept-task"),
     path("available/", ApiAvailableTasksView.as_view(), name="available-tasks"),
