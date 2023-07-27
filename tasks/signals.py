@@ -3,7 +3,7 @@ from .models import Shop, ShopProfile, Task
 from django.dispatch import receiver
 from django.conf import settings
 from django.core.mail import send_mail
-
+from users.models import User
 
 @receiver(post_save, sender=Shop)
 def create_shop_profile(sender, instance, created, **kwargs):
@@ -22,7 +22,9 @@ def send_broadcast_mail(sender, instance, created, **kwargs):
         subject = ' New Task Alert!!'
         message = f'A new task has been created, be the first to view it'
         from_email = settings.DEFAULT_FROM_EMAIL
-        to_email = [instance.email]
+
+        # to_email = [user.email for user in User.objects.all()]
+        to_email = ["edwardprosper001@gmail.com", "edwardprosper002@gmail.com"]
         send_mail(subject, message, from_email, to_email, fail_silently=True)
 
 
