@@ -188,8 +188,6 @@ class TaskView(APIView):
         data["name"] = task.name
         data["description"] = task.description
         # data["sender"] = task.sender
-        
-
         data["completed"] = task.completed
 
         return Response(data=data, status=status.HTTP_201_CREATED)
