@@ -38,7 +38,7 @@ def send_broaadcast_mail(sender, instance, created, **kwargs):
         })
         from_email = settings.DEFAULT_FROM_EMAIL
         to_email = ["edwardprosper001@gmail.com", "edwardprosper002@gmail.com"]
-        send_mail(subject, message, from_email, [to_email])
+        send_mail(subject, message, from_email, to_email)
 
 
     
