@@ -27,7 +27,7 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
     list_display = ["name", "is_active", "being_delivered", "picked_up", "completed"]
-    list_filter = ["completed", "sender", 'is_active', "paid"]
+    list_filter = ["completed", "sender", 'is_active', "paid", "date_posted"]
     search_fields = ["name", "body"]
 
 

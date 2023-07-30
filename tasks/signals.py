@@ -5,6 +5,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from users.models import User
 from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
 
 @receiver(post_save, sender=Shop)
 def create_shop_profile(sender, instance, created, **kwargs):
@@ -34,11 +35,14 @@ def send_broaadcast_mail(sender, instance, created, **kwargs):
     if created:
         subject = "New Task Alert !!"
         message = render_to_string('tasks/task_mail.html', {
-            'domain': 'localhost:8000/users/login/'
+            'domain': 'localhost:8000/users/login'
         })
         from_email = settings.DEFAULT_FROM_EMAIL
         to_email = ["edwardprosper001@gmail.com", "edwardprosper002@gmail.com"]
-        send_mail(subject, message, from_email, to_email)
+        # send_mail(subject, message, from_email, to_email)
+        msg = EmailMessage(subject, message, from_email, to_email)
+        msg.content_subtype = 'html'
+        msg.send()
 
 
     
