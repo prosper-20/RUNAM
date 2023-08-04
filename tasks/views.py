@@ -612,7 +612,8 @@ class ApiPostTaskAssignmentView(APIView):
         current_task.picked_up = True
         current_task.save()
         serializer = TaskSerializer(current_task)
-        data = {"Success": f"You have successfully assigned the task to {username}"}
+        data = {"Success": f"You have successfully assigned the task to {username}",
+                "Send a message": f"http://127.0.0.1:8000/chat/room/{id}/"}
         return Response(data, status=status.HTTP_202_ACCEPTED)
     
 
