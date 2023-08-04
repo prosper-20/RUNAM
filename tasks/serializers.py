@@ -119,10 +119,14 @@ class TaskSerializer(serializers.ModelSerializer):
     images = TaskImageSerializer(many=True, read_only=True)
     uploaded_images = serializers.ListField(
         child=serializers.ImageField(max_length=1000000, allow_empty_file=False, use_url=False), write_only=True)
+    task_url = serializers.HyperlinkedIdentityField(
+        view_name="task-detail",
+        lookup_field = "id"
+    )
     
     class Meta:
         model = Task
-        fields = ["id", "name", "description", "category", "image", "bidding_amount", "sender_name", "keywords", "is_active", "picked_up",  "completed", "paid", "images", "uploaded_images"]
+        fields = ["id", "task_url", "name", "description", "category", "image", "bidding_amount", "sender_name", "keywords", "is_active", "picked_up",  "completed", "paid", "images", "uploaded_images"]
 
 
     def create(self, validated_data):

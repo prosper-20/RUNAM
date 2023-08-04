@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from tasks.models import Task
 
 @login_required
-def course_chat_room(request, task_id):
+def task_chat_room(request, task_id):
     try:
         task = Task.objects.get(id=task_id)
     except Task.DoesNotExist:
