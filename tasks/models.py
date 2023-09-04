@@ -25,7 +25,7 @@ class Category(models.Model):
 
 
 class Task(models.Model):
-    id = models.UUIDField(primary_key = True, default = uuid.uuid4, editable = False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, max_length=36)
     name = models.CharField(max_length=200)
     description = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
