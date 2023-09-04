@@ -44,6 +44,9 @@ class Task(models.Model):
     messenger = models.ForeignKey(User, related_name="the_task_messenger", on_delete=models.CASCADE, blank=True, null=True)
     shop = models.ForeignKey("Shop", on_delete=models.CASCADE, blank=True, null=True)
 
+    class Meta:
+        ordering = ("-date_posted",)
+
 
     def __str__(self):
         return self.name

@@ -117,8 +117,8 @@ class TaskSerializer(serializers.ModelSerializer):
     paid = serializers.ReadOnlyField()
     category = serializers.StringRelatedField()
     images = TaskImageSerializer(many=True, read_only=True)
-    # uploaded_images = serializers.ListField(
-    #     child=serializers.ImageField(max_length=1000000, allow_empty_file=False, use_url=False), write_only=True)
+    uploaded_images = serializers.ListField(
+        child=serializers.ImageField(max_length=1000000, allow_empty_file=False, use_url=False), write_only=True, required=False)
     task_url = serializers.HyperlinkedIdentityField(
         view_name="task-detail",
         lookup_field = "id"
@@ -130,7 +130,7 @@ class TaskSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
-        if uploaded_images:
+        if validated_data.get("uploaded_images"):
             uploaded_images = validated_data.pop("uploaded_images")
             task = Task.objects.create(**validated_data)
             for image in uploaded_images:

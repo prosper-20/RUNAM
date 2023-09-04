@@ -164,17 +164,20 @@ class ApiShopCreateTaskView(APIView):
     
 
 class TaskView(APIView):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
     # def get_queryset(self):
     #     """Returns Polls that were created today"""
     #     return Task.objects.exclude(sender=self.request.user.pk)
+
+    
     
     def get(self, request, format=None):
         # queryset = Task.objects.filter(is_active=False)
         queryset = Task.objects.exclude(sender=self.request.user) | Task.objects.exclude(picked_up=True)
         serializer = TaskSerializer(queryset, many=True)
         return Response(serializer.data, request.user,  status=status.HTTP_200_OK)
+    
     
     def post(self, request, format=None):
         data = request.data
@@ -197,10 +200,18 @@ class TaskView(APIView):
 class ApiTaskView(ListCreateAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
-    permission_classes = [IsAuthenticated, HasPhoneNumberPermission]
+    # permission_classes = [IsAuthenticated, HasPhoneNumberPermission]
     filter_backends = (SearchFilter, OrderingFilter)
     search_fields = ("name", "sender__username", "category__name", "description")
-    
+
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]  # Specify your desired permission class for GET requests
+        elif self.request.method == 'POST':
+            return [IsAuthenticated(), HasPhoneNumberPermission()]  # Specify your desired permission class for POST requests
+        return []
+
 
     def get_context_data(self, request, **kwargs):
         # Call the base implementation first to get a context
@@ -221,7 +232,15 @@ class ApiTaskView(ListCreateAPIView):
 
 
 class ApiEditTaskView(APIView):
-    permission_classes = [IsAuthenticated,]
+    # permission_classes = [IsAuthenticated,]
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]  # Specify your desired permission class for GET requests
+        elif self.request.method == 'PUT':
+            return [IsAuthenticated()]  # Specify your desired permission class for POST requests
+        return []
+    
     def get(self, request, id, format=None):
         try: 
             task = Task.objects.get(id=id)
