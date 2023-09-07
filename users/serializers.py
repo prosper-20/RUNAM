@@ -3,7 +3,9 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 from rest_framework.generics import GenericAPIView
 from .models import Profile, Referral
-User = get_user_model()
+from django.conf import settings
+
+from accounts.models import User
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -13,7 +15,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("username", "email")
+        fields = ("email",)
         # fields = ("id", "username", "email")
 
 
@@ -23,7 +25,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["username", "email", "date_joined", "password", "password2"]
+        fields = ["email", "date_joined", "password", "password2"]
         extra_kwargs = {
             "password":{"write_only": True}
         }
@@ -31,7 +33,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     def save(self):
         user = User(
             email = self.validated_data["email"],
-            username = self.validated_data["username"]
+            
         )
         password = self.validated_data["password"]
         password2 = self.validated_data["password2"]
@@ -49,14 +51,28 @@ class UserLoginSerializer(serializers.Serializer):
     """
 
     email = serializers.CharField()
-    password = serializers.CharField(write_only=True)
-
+    password = serializers.CharField()
 
     def validate(self, data):
-        user = authenticate(**data)
+        try:
+            user = User.objects.get(email=data['email'])
+            print(user)
+        except User.DoesNotExist:
+            raise serializers.ValidationError('Incorrect Credentials')
+
+        
+        user = authenticate(username=user.email, password=data['password'])
+        print(user)
         if user and user.is_active:
             return user
-        raise serializers.ValidationError("Incorrect Credentials")
+        raise serializers.ValidationError('Incorrect Credentials')
+
+
+    # def validate(self, data):
+    #     user = authenticate(**data)
+    #     if user and user.is_active:
+    #         return user
+    #     raise serializers.ValidationError("Incorrect Credentials")
 
 
 class ReferralSerializer(serializers.ModelSerializer):

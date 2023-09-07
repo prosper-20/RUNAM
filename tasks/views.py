@@ -21,7 +21,7 @@ from .serializers import (
     CreateShopTaskSerializer)
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
-from users.models import User
+from users.models import CustomUser
 from rest_framework.filters import SearchFilter, OrderingFilter
 from .permissions import HasPhoneNumberPermission
 
@@ -314,7 +314,7 @@ class AcceptTaskView(APIView):
         # if get_sender_pk == user:
         #     return Response({"Error": "You cannot assign a task to yourself"})
         user = serializer.data.get("receiver")
-        receiver_pk = User.objects.get(pk=user)
+        receiver_pk = CustomUser.objects.get(pk=user)
         if sender_pk == receiver_pk:
             return Response({"Error": "You cant assign a task to yourself"})
         task_id = serializer.data.get("task")
@@ -322,7 +322,7 @@ class AcceptTaskView(APIView):
         task.is_active = False
         task.picked_up = True
         task.save()
-        username = User.objects.get(pk=user).username
+        username = CustomUser.objects.get(pk=user).username
         print(username)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
     
@@ -617,17 +617,17 @@ class ApiPostTaskAssignmentView(APIView):
         bidders = current_task.task_bidders.all()
         print(bidders)
         try:
-            Bidder.objects.filter(task=Task.objects.get(id=id), user=User.objects.get(username=username).id)
+            Bidder.objects.filter(task=Task.objects.get(id=id), user=CustomUser.objects.get(username=username).id)
         except Bidder.DoesNotExist:
             return Response("The user didn't bid for the task")
-        except User.DoesNotExist:
+        except CustomUser.DoesNotExist:
             return Response({"Error": "The user doesn't exist"})
         
 
         if username == current_task.sender.username:
             return Response({"Error": "You caanot accept your own tasks"})
 
-        current_task.messenger = User.objects.get(username=username)
+        current_task.messenger = CustomUser.objects.get(username=username)
         current_task.picked_up = True
         current_task.save()
         serializer = TaskSerializer(current_task)

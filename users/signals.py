@@ -19,7 +19,7 @@ from django.core.mail import EmailMessage
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+from django.conf import settings
 from .models import Profile, Referral
 
 
@@ -28,7 +28,7 @@ from users.validators import validate_phone_number
 from django.core.exceptions import ValidationError
 from twilio.rest import Client
 
-User = get_user_model()
+User = settings.AUTH_USER_MODEL
 
 
 @receiver(post_save, sender=User, dispatch_uid="unique_identifier")
@@ -53,7 +53,7 @@ def send_confirmation_email(sender, instance, created, **kwargs):
 
 
 
-@receiver(post_save, sender=User)
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)

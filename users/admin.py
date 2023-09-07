@@ -1,9 +1,9 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import User, Profile, Referral
+from .models import CustomUser, Profile, Referral
 
-admin.site.register(User)
+admin.site.register(CustomUser)
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):

@@ -3,7 +3,7 @@ from .models import Shop, ShopProfile, Task
 from django.dispatch import receiver
 from django.conf import settings
 from django.core.mail import send_mail
-from users.models import User
+from users.models import CustomUser
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 

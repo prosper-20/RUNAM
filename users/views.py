@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .serializers import UserRegistrationSerializer, CustomUserSerializer, ChangePasswordSerializer
-from .models import User, Profile
+from .models import CustomUser, Profile
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -10,7 +10,6 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import smart_str
 from django.utils.http import urlsafe_base64_decode
 from rest_framework.generics import GenericAPIView
-from . import serializers
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -25,7 +24,8 @@ class APIRegisterView(APIView):
         user = serializer.save()
         return Response({
             "message": "Created user successfully",
-            "success": "Check your email address and activate your account",            "username": user.username,
+            "success": "Check your email address and activate your account",
+            "email-address": user.email,
             "status-code": 200
         }, status=status.HTTP_201_CREATED
 )
@@ -64,9 +64,11 @@ class UserLoginAPIView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
+        print(user)
         serializer = serializers.CustomUserSerializer(user)
         token = RefreshToken.for_user(user)
         data = serializer.data
+        print(data)
         data["tokens"] = {"refresh": str(token), "access": str(token.access_token)}
         return Response(data, status=status.HTTP_200_OK)
     

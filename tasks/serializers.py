@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Task, AcceptTask, TaskReview, Keyword, Bidder, NewBidder, Support, Shop, TaskImages
-from users.models import User
+from users.models import CustomUser
 from django.utils import timezone
 
 class KeywordsSerializer(serializers.ModelSerializer):

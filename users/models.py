@@ -11,7 +11,7 @@ import random
 import string
 
 
-class User(AbstractBaseUser):
+class CustomUser(AbstractBaseUser):
     email = models.EmailField(
         verbose_name='email address',
         max_length=255,
@@ -53,6 +53,8 @@ class User(AbstractBaseUser):
         # Simplest possible answer: Yes, always
         return True
 
+   
+
     @property
     def is_staff(self):
         "Is the user a member of staff?"
@@ -74,6 +76,7 @@ class User(AbstractBaseUser):
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    username = models.CharField(default="user", max_length=100)
     avatar = models.ImageField(default="default2.jpg",upload_to="user_profile_pics", blank=True)
     bio = models.CharField(max_length=200, blank=True)
     location = models.CharField(max_length=200)
@@ -83,7 +86,7 @@ class Profile(models.Model):
 
 
     def __str__(self):
-        return f"{self.user.username} profile"
+        return f"{self.username} profile"
 
     @property
     def filename(self):
@@ -99,12 +102,12 @@ def generate_referral_code():
     return code
 
 class Referral(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     code = models.CharField(max_length=6, unique=True, default=generate_referral_code)
     used = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.user.username} code"
+        return f"{self.user.email} code"
     
 
 

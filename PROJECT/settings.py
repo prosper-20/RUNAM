@@ -33,6 +33,8 @@ DEBUG = True
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,7 +46,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'channels',
-    'users.apps.UsersConfig',
     'payments.apps.PaymentsConfig',
     'chat.apps.ChatConfig',
     'rest_framework',
@@ -56,12 +57,12 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'users.apps.UsersConfig',
+    'accounts', 
 
 ]
 
 SITE_ID = 1
-
-AUTH_USER_MODEL = "users.User"
 
 
 ASGI_APPLICATION = 'PROJECT.asgi.application'
@@ -137,11 +138,14 @@ WSGI_APPLICATION = 'PROJECT.wsgi.application'
 #     }
 # }
 
+AUTH_USER_MODEL = 'accounts.User'
+
+
 
 DATABASES = {     
     'default': {
     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    'NAME': 'RUNAM',
+    'NAME': 'RUNAM4',
     'USER': 'postgres',
     'PASSWORD': config('DB_PASSWORD'),
     'HOST': 'localhost',
@@ -197,11 +201,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
-    
-]
+AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
 
 
 # LOGIN_URL = "login2"
