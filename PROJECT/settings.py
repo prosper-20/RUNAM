@@ -143,14 +143,25 @@ AUTH_USER_MODEL = 'accounts.User'
 
 
 
+# DATABASES = {     
+#     'default': {
+#     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#     'NAME': 'RUNAM4',
+#     'USER': 'postgres',
+#     'PASSWORD': config('DB_PASSWORD'),
+#     'HOST': 'localhost',
+#     'PORT': '5432'  
+#     } 
+# } 
+
 DATABASES = {     
     'default': {
-    'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    'NAME': 'RUNAM4',
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': 'railway',
     'USER': 'postgres',
-    'PASSWORD': config('DB_PASSWORD'),
-    'HOST': 'localhost',
-    'PORT': '5432'  
+    'PASSWORD': config('DB_PASSWORD_2'),
+    'HOST': 'containers-us-west-210.railway.app',
+    'PORT': '7174'  
     } 
 } 
 
