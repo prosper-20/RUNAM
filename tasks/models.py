@@ -1,5 +1,6 @@
 from django.db import models
 from users.models import CustomUser
+from accounts.models import User
 import uuid
 
 
@@ -32,7 +33,7 @@ class Task(models.Model):
     keywords = models.ManyToManyField(Keyword, blank=True)
     bidding_amount = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to="task_images", blank=True, null=True)
-    sender =models.ForeignKey(CustomUser, related_name="sender", on_delete=models.CASCADE)
+    sender =models.ForeignKey(User, related_name="sender", on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
     task_bidders = models.ManyToManyField("Bidder", related_name="single_task_bidders", blank=True)
     date_posted = models.DateTimeField(auto_now_add=True)

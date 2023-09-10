@@ -24,7 +24,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticate
 from users.models import CustomUser
 from rest_framework.filters import SearchFilter, OrderingFilter
 from .permissions import HasPhoneNumberPermission
-
+from accounts.models import User as Accounts_user
 
 class APITaskShopView(APIView):
     permission_classes = [AllowAny]
@@ -220,7 +220,12 @@ class ApiTaskView(ListCreateAPIView):
         return context
 
     def perform_create(self, serializer):
-        serializer.save(sender=self.request.user)
+        user = self.request.user
+        account = Accounts_user.objects.get(email=user)
+        print(account)
+        print(user)
+        # serializer.save(sender=self.request.user)
+        serializer.save(sender=account)
         return super().perform_create(serializer)
     
 

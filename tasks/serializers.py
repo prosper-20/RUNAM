@@ -141,7 +141,7 @@ class TaskSerializer(serializers.ModelSerializer):
 
 
     def get_name_of_sender(self, task_sender):
-        username = task_sender.sender.username
+        username = task_sender.sender.profile.username
         return username
     
     def get_actual_keyword(self, obj):
