@@ -91,7 +91,7 @@ class ProfileSerializer(CustomUserSerializer):
 
     class Meta:
         model = Profile
-        fields = ("bio", "phone_number", "my_referral_code")
+        fields = ("bio", "phone_number", "avatar", "location", "my_referral_code")
 
     def get_code(self, obj):
         return ReferralSerializer(Referral.objects.get(user=obj.user)).data

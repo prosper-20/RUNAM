@@ -136,6 +136,22 @@ class UserProfileAPIView(PartialUpdateRetrieveUpdateDestroyAPIView):
     def get_object(self):
         return self.request.user.profile
     
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        print(instance)
+        # Customize the update logic here if needed
+        # For example, you can perform additional validations or modify fields before saving
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        data_1 = dict(serializer.data)
+        instance.is_complete = True
+        instance.save()
+        data_2 = {"Message": "Profile  has been updated successfully!"}
+        data_2.update(data_1)
+        return Response(data_2, status=status.HTTP_202_ACCEPTED)
+    
     
 
 class UserAvatarAPIView(RetrieveUpdateAPIView):
@@ -159,7 +175,7 @@ class UserAvatarAPIView(RetrieveUpdateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         data_1 = dict(serializer.data)
-        data_2 = {"Message": "Profile has been updated successfully!"}
+        data_2 = {"Message": "Profile Image has been updated successfully!"}
         data_2.update(data_1)
         return Response(data_2, status=status.HTTP_202_ACCEPTED)
     
