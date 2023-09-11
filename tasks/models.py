@@ -63,16 +63,16 @@ class TaskImages(models.Model):
 
 class Bidder(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.CharField(max_length=150)
 
     def __str__(self):
-        return self.user.username
+        return self.user.profile.username
     
 
 class NewBidder(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.CharField(max_length=150)
 
     def __str__(self):
@@ -82,8 +82,8 @@ class NewBidder(models.Model):
 
 class TaskReview(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
-    errander = models.ForeignKey(CustomUser, related_name="task_errander", on_delete=models.CASCADE, blank=True, null=True)
-    errandee = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
+    errander = models.ForeignKey(User, related_name="task_errander", on_delete=models.CASCADE, blank=True, null=True)
+    errandee = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     comment = models.TextField()
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
@@ -97,7 +97,7 @@ class TaskReview(models.Model):
 
 class AcceptTask(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="tasks")
-    receiver = models.ForeignKey(CustomUser, related_name="receiver", on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User, related_name="receiver", on_delete=models.CASCADE)
     time_picked = models.DateTimeField(auto_now_add=True)
     receiver_amount = models.DecimalField(max_digits=10, decimal_places=2)
 
@@ -115,7 +115,7 @@ SUPPORT_CATEGORY = (
 
 
 class Support(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     task = models.ForeignKey(Task, on_delete=models.CASCADE, blank=True, null=True)
     category = models.CharField(choices=SUPPORT_CATEGORY, max_length=20)
     message = models.TextField()
@@ -128,13 +128,13 @@ class Support(models.Model):
 
 
 class Shop(models.Model):
-    owner = models.ForeignKey(CustomUser, related_name="the_shop_owner", on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, related_name="the_shop_owner", on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     slug = models.SlugField()
     description = models.TextField()
     location = models.CharField(max_length=100)
     tasks = models.ManyToManyField(Task, related_name="shop_subscribers", blank=True)
-    subscribers = models.ManyToManyField(CustomUser, blank=True)
+    subscribers = models.ManyToManyField(User, blank=True)
     rating = models.CharField(max_length=10, default=10)
     is_verified = models.BooleanField(default=False)
 
