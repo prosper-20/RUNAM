@@ -409,10 +409,11 @@ class ApiTaskBidView(APIView):
         task_id = Task.objects.get(id=id).id
         task = Task.objects.get(id=id)
         user = request.user
+        account = Accounts_user.objects.get(email=user)
         print(task)
         print(task.id)
         print(user)
-        if task.sender == user:
+        if task.sender == account:
             return Response({"Error": "You cannot bid for a task you created"}, status=status.HTTP_400_BAD_REQUEST)
         
         if Bidder.objects.filter(task=task.id, user=user).exists():
@@ -429,7 +430,7 @@ class ApiTaskBidView(APIView):
         task.save()
         return Response(
             {"Success": "Bid for task submitted",
-            "user": user.username,
+            "user": user.profile.username,
             "message": new_bidder_data.message
                         } ,status=status.HTTP_201_CREATED)
 
@@ -437,8 +438,9 @@ class ApiTaskBidView(APIView):
     def put(self, request, id, format=None):
         task = Task.objects.get(id=id)
         user = request.user
+        account = Accounts_user.objects.get(email=user)
         try:
-            bid = Bidder.objects.get(task=task, user=user)
+            bid = Bidder.objects.get(task=task, user=account)
         except Bidder.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
@@ -447,7 +449,7 @@ class ApiTaskBidView(APIView):
         updated_bid = serializer.save()
         return Response({
             "Success": "Task bid modified successfully",
-            "user": user.username,
+            "user": user.profile.username,
             "message": updated_bid.message
         }, status=status.HTTP_202_ACCEPTED)
 
@@ -455,8 +457,9 @@ class ApiTaskBidView(APIView):
     def delete(self, request, id, format=None):
         task = Task.objects.get(id=id)
         user = request.user
+        account = Accounts_user.objects.get(email=user)
         try:
-            bid = Bidder.objects.get(task=task, user=user)
+            bid = Bidder.objects.get(task=task, user=account)
         except Bidder.DoesNotExist:
             return Response({"Error": "Bid for task not found"}, status=status.HTTP_404_NOT_FOUND)
         
