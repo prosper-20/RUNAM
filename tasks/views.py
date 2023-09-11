@@ -256,10 +256,13 @@ class ApiEditTaskView(APIView):
         
     
     def put(self, request, id, format=None):
+        serializer_context = {
+            'request': request,
+        }
         try: 
             task = Task.objects.get(id=id)
             if request.user == task.sender:
-                serializer = TaskSerializer(task, data=request.data, partial=True)
+                serializer = TaskSerializer(task, data=request.data, context=serializer_context, partial=True)
                 serializer.is_valid(raise_exception=True)
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
