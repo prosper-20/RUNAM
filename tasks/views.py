@@ -421,7 +421,7 @@ class ApiTaskBidView(APIView):
                     "Error": "You can not bid twice for a task"
                  }, status=status.HTTP_400_BAD_REQUEST)
 
-        new_bidder = Bidder(task=task, user=user)
+        new_bidder = Bidder(task=task, user=account)
         
         serializer = PostBidderSerializer(new_bidder, data=request.data)
         serializer.is_valid(raise_exception=True)
