@@ -36,7 +36,7 @@ class GetBidderSerializer(serializers.ModelSerializer):
         fields = ["user", "message"]
 
     def get_bidder_username(self, obj):
-        return obj.user.username
+        return obj.user.profile.username
     
 
 
