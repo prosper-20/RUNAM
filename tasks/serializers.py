@@ -224,7 +224,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     def get_task_bidder_details(self, obj):
         all_bidders = obj.task_bidders.all()
         for bidder in all_bidders:
-            return bidder.user.username
+            return bidder.user.profile.username
         
     def generate_task_url(self, obj):
         return f"http://127.0.0.1:8000/tasks/{obj.id}"

@@ -596,7 +596,6 @@ class ApiMyActivityView(APIView):
 	# 	data = {}
 
 
-
     # def post(self, request, format=None):
     #     serializer = self.serializer_class(data=request.data)
 
