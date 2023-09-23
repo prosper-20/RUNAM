@@ -6,7 +6,7 @@ from django.core.mail import send_mail
 from .managers import UserManager
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
-import os
+import os 
 import random
 import string
 
@@ -17,7 +17,7 @@ class CustomUser(AbstractBaseUser):
         max_length=255,
         unique=True,
     )
-    username = models.CharField(max_length=254)
+    username = models.CharField(max_length=254, unique=True)
     first_name = models.CharField(verbose_name=_("First Name"), max_length=50)
     is_active = models.BooleanField(default=False)
     staff = models.BooleanField(default=False) # a admin user; non super-user
