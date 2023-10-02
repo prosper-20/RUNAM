@@ -97,7 +97,7 @@ class ProfileSerializer(CustomUserSerializer):
         return ReferralSerializer(Referral.objects.get(user=obj.user)).data
     
     def get_user_username(self, obj:Profile):
-        return obj.username
+        return obj.user.username
 
     
 
