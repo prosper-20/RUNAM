@@ -23,7 +23,9 @@ from .views import (
     ApiCreateTaskShopView,
     ApiTaskShopDetailView,
     ApiCreateTaskShopSubscriber,
-    ApiShopCreateTaskView
+    ApiShopCreateTaskView,
+    ApiLabReportTaskView,
+    ApiUpdateLabReportTaskView
 
 )
 
@@ -42,6 +44,8 @@ urlpatterns = [
     path("shop/<slug:slug>/create-task/", ApiShopCreateTaskView.as_view(), name="create-shop-task"),
     path("shop/<slug:slug>/", ApiTaskShopDetailView.as_view(), name="shop-detail"),
     #  URLS FOR TASK
+    path("lab-reports/", ApiLabReportTaskView.as_view(), name="lab-reports"),
+    path("lab-reports/<slug:slug>/", ApiUpdateLabReportTaskView.as_view(), name="lab"),
     path("history/",  ApiTaskHistory.as_view(), name="tasks-history"),
     path("accept/", AcceptTaskView.as_view(), name="accept-task"),
     path("available/", ApiAvailableTasksView.as_view(), name="available-tasks"),

@@ -1,14 +1,44 @@
 from rest_framework import serializers
-from .models import Task, AcceptTask, TaskReview, Keyword, Bidder, NewBidder, Support, Shop, TaskImages
+from .models import (Task, 
+                     AcceptTask, 
+                     TaskReview, 
+                     Keyword, 
+                     Bidder, 
+                     NewBidder, 
+                     Support, 
+                     Shop, 
+                     TaskImages, 
+                     LabReportTask, 
+                     LaundryTask)
 from users.models import CustomUser
 from django.utils import timezone
+
+class LabReportSerializer(serializers.ModelSerializer):
+    sender_name = serializers.SerializerMethodField("get_sender_name")
+    receiver_name = serializers.SerializerMethodField("get_sender_name")
+    slug = serializers.SerializerMethodField("show_slug")
+    class Meta:
+        model = LabReportTask
+        fields = ["course", "no_of_pages", "slug", "price", "sender_name", "receiver_name", "task_bidders", "due_date"]
+
+    def get_sender_name(self, obj):
+        return obj.sender.profile.username
+    
+    def show_slug(self, obj):
+        return obj.task_slug
+    
+
+class LaundryTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LaundryTask
+        fields = ["task_slug", "clothes", "price", "due_date"]
+
+        
 
 class KeywordsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Keyword
         fields = ["name"]
-
-
 
 
 

@@ -1,6 +1,38 @@
 from django.contrib import admin
-from .models import Task, TaskReview, Keyword, Bidder, NewBidder, Support, Category, Shop, ShopProfile, ShopImages, ShopDocuments
+from .models import (
+    Task, 
+    TaskReview, 
+    Keyword, 
+    Bidder, 
+    NewBidder, 
+    Support, 
+    Category, 
+    Shop, 
+    ShopProfile, 
+    ShopImages, 
+    ShopDocuments, 
+    DeliveryTask, 
+    LabReportTask,
+    LaundryTask)
 
+@admin.register(LaundryTask)
+class LaundryTaskAdmin(admin.ModelAdmin):
+    list_display = ["sender", "clothes", "price", "receiver"]
+    list_filter = ["sender", "clothes",]
+    prepopulated_fields = {"task_slug": ("clothes", "price", "due_date")}
+    list_editable = ("clothes",)
+
+
+
+class LabReportTaskAdmin(admin.ModelAdmin):
+    list_display = ["course", "no_of_pages", "sender", "receiver"]
+    list_filter = ["course"]
+    list_editable = ["no_of_pages"]
+    prepopulated_fields = {"task_slug": ("course",)}
+
+
+admin.site.register(LabReportTask, LabReportTaskAdmin)
+    
 
 class ShopProfileAdmin(admin.ModelAdmin):
     list_display = ["shop"]

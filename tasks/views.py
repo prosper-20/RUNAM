@@ -1,10 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework import serializers
-from .models import Task, AcceptTask, TaskReview, Bidder, NewBidder, Support, Shop
+from .models import Task, AcceptTask, TaskReview, Bidder, NewBidder, Support, Shop, LabReportTask, LaundryTask
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
 from .serializers import (
+    LaundryTaskSerializer,
+    LabReportSerializer,
     TaskSerializer, 
     AcceptTaskSerializer, 
     TaskReviewSerializer, 
@@ -20,7 +23,7 @@ from .serializers import (
     ShopSerializer,
     CreateShopTaskSerializer)
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly, IsAdminUser
 from users.models import CustomUser
 from rest_framework.filters import SearchFilter, OrderingFilter
 from .permissions import HasPhoneNumberPermission
@@ -659,6 +662,107 @@ class ApiTaskSupport(APIView):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
+
+class ApiLabReportTaskView(APIView):
+     
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]  # Custom permission for GET requests
+        elif self.request.method == 'POST':
+            return [IsAuthenticated()]
+        
+
+    def get(self, request, format=None):
+        lab_reports = LabReportTask.objects.all()
+        serializer = LabReportSerializer(lab_reports, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request, format=None):
+        c_user = request.user
+        user = Accounts_user.objects.get(email=c_user)
+        new_lab_report = LabReportTask(sender=user)
+        lab_report = LabReportSerializer(new_lab_report, data=request.data)
+        lab_report.is_valid(raise_exception=True)
+        lab_report.save()
+        return Response({"Success": "Task creation successful"}, status=status.HTTP_201_CREATED)
+
+
+
+
+
+class ApiUpdateLabReportTaskView(APIView):
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]  # Custom permission for GET requests
+        elif self.request.method == 'PUT':
+            return [IsAuthenticated()]
+        
+    def get(self, request, slug, format=None):
+        course = get_object_or_404(LabReportTask, task_slug=slug)
+        serializer = LabReportSerializer(course)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+    
+
+    def put(self, request, slug, format=None):
+        course = get_object_or_404(LabReportTask, task_slug=slug)
+        if request.user != course.sender:
+            raise serializers.ValidationError({"Response": "You do not have the permission to do this"})
+        
+        serializer = LabReportSerializer(course, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"Success": "Task update successful"}, status=status.HTTP_202_ACCEPTED)
+    
+    def delete(self, request, slug, format=None):
+        course = get_object_or_404(LabReportTask, task_slug=slug)
+        course.delete()
+        return Response({"Success": "Task deleted successfully"}, status=status.HTTP_200_OK)
+    
+
+class ApiLaundryTaskView(APIView):
+    def post(self, request, format=None):
+        c_user = request.user
+        user = Accounts_user.objects.get(email=c_user)
+        new_laundry = LaundryTask(sender=user)
+        serializer = LaundryTaskSerializer(new_laundry, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"Success": "Task created"})
+    
+
+class ApiDetailLaundryView(APIView):
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]  # Custom permission for GET requests
+        elif self.request.method == 'PUT':
+            return [IsAuthenticated()]
+        
+    def get(self, request, slug, format=None):
+        task = get_object_or_404(LaundryTask, task_slug=slug)
+        serializer = LaundryTaskSerializer(task)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+    
+
+    def put(self, request, slug, format=None):
+        task = get_object_or_404(LaundryTask, task_slug=slug)
+        if request.user != task.sender:
+            raise serializers.ValidationError({"Response": "You do not have the permission to do this"})
+        
+        serializer = LaundryTaskSerializer(task, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"Success": "Task update successful"}, status=status.HTTP_202_ACCEPTED)
+    
+    def delete(self, request, slug, format=None):
+        task = get_object_or_404(LaundryTask, task_slug=slug)
+        task.delete()
+        return Response({"Success": "Task deleted successfully"}, status=status.HTTP_200_OK)
+
+    
+    
+    
+
+        
 
 
 
