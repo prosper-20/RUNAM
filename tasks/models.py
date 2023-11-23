@@ -2,7 +2,7 @@ from django.db import models
 from users.models import CustomUser
 from accounts.models import User
 import uuid
-
+from decimal import Decimal
 
 class Keyword(models.Model):
     name = models.CharField(max_length=100)
@@ -52,6 +52,25 @@ class Task(models.Model):
     def __str__(self):
         return self.name
 
+
+class CommissionPercentage(models.Model):
+    percentage = models.DecimalField(default=0.10, max_digits=12, decimal_places=2)
+
+    def __str__(self):
+        return str(self.percentage)
+
+class Commission(models.Model):
+    unique_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, max_length=36)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    
+    def save(self, *args, **kwargs):
+        # Generate a slug based on the title
+        self.amount = Decimal(CommissionPercentage.objects.last().percentage) * self.task.bidding_amount
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.task.name 
 
 
 class DeliveryTask(models.Model):

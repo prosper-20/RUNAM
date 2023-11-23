@@ -15,6 +15,12 @@ from .models import (
     LabReportTask,
     LaundryTask)
 
+from .models import CommissionPercentage, Commission
+
+admin.site.register(Commission)
+
+admin.site.register(CommissionPercentage)
+
 @admin.register(LaundryTask)
 class LaundryTaskAdmin(admin.ModelAdmin):
     list_display = ["sender", "clothes", "price", "receiver"]
