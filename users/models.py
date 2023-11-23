@@ -17,7 +17,7 @@ class CustomUser(AbstractBaseUser):
         max_length=255,
         unique=True,
     )
-    username = models.CharField(max_length=254, unique=True)
+    username = models.CharField(max_length=254)
     first_name = models.CharField(verbose_name=_("First Name"), max_length=50)
     is_active = models.BooleanField(default=False)
     staff = models.BooleanField(default=False) # a admin user; non super-user
@@ -76,7 +76,7 @@ class CustomUser(AbstractBaseUser):
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    username = models.CharField(max_length=100, unique=True)
+    username = models.CharField(max_length=100)
     avatar = models.ImageField(default="default2.jpg",upload_to="user_profile_pics")
     bio = models.CharField(max_length=200, blank=True)
     location = models.CharField(max_length=200)
