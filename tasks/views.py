@@ -4,7 +4,7 @@ from .models import Task, AcceptTask, TaskReview, Bidder, NewBidder, Support, Sh
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from django.views import View
 from .serializers import (
     LaundryTaskSerializer,
     LabReportSerializer,
@@ -29,7 +29,8 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from .permissions import HasPhoneNumberPermission
 from accounts.models import User as Accounts_user
 from django.http import HttpResponse
-
+import json
+from geolocation import get_ip_geolocation_data
 
 class APITaskShopView(APIView):
     permission_classes = [AllowAny]
@@ -199,7 +200,22 @@ class TaskView(APIView):
         data["completed"] = task.completed
 
         return Response(data=data, status=status.HTTP_201_CREATED)
-    
+
+
+
+class Home(View):
+    def get(self, request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        geolocation_json = get_ip_geolocation_data(ip)
+        geolocation_data = json.loads(geolocation_json)
+        print(geolocation_data)
+        country = geolocation_data['country']
+        region = geolocation_data['region']
+        return HttpResponse("Welcome! Your IP address is: {} and you are visiting from {} in {}".format(ip, region, country))
 
 
 class ApiTaskView(ListCreateAPIView):
@@ -209,17 +225,14 @@ class ApiTaskView(ListCreateAPIView):
     filter_backends = (SearchFilter, OrderingFilter)
     search_fields = ("name", "sender__username", "category__name", "description")
 
-    def embed(self, request):
+    def embed(self, request,*args, **kwargs):
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
         if x_forwarded_for:
             ip = x_forwarded_for.split(',')[0]
         else:
             ip = request.META.get('REMOTE_ADDR')
-        return "Welcome! You are visiting from: {}".format(ip)
+        return HttpResponse("Welcome! You are visiting from: {}".format(ip))
     
-    
-
-
     def get_permissions(self):
         if self.request.method == 'GET':
             return [AllowAny()]  # Specify your desired permission class for GET requests
