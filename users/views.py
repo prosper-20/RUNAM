@@ -15,12 +15,16 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.generics import RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework import permissions
+from utils import verify_email
 
 
 class APIRegisterView(APIView):
     def post(self, request, format=None):
         serializer = UserRegistrationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data.get("email")
+        if verify_email(email) == False:
+            return Response({"Error": "Email adress not found"})
         user = serializer.save()
         return Response({
             "message": "Created user successfully",

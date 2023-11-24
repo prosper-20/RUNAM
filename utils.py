@@ -14,9 +14,10 @@ from decouple import config
 
 def verify_email(email):
     response = requests.get(f"https://emailvalidation.abstractapi.com/v1/?api_key={config('ABSTRACT_API_KEY')}&email={email}")
-    return response.status_code
-
-print(verify_email("edwardprosper001@gmail.com"))
+    dictionary_response = dict(response.json())
+    if dictionary_response.get("deliverability") == "DELIVERABLE":
+        return True
+    return False
 
 
 

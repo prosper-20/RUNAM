@@ -28,6 +28,8 @@ from users.models import CustomUser
 from rest_framework.filters import SearchFilter, OrderingFilter
 from .permissions import HasPhoneNumberPermission
 from accounts.models import User as Accounts_user
+from django.http import HttpResponse
+
 
 class APITaskShopView(APIView):
     permission_classes = [AllowAny]
@@ -206,6 +208,16 @@ class ApiTaskView(ListCreateAPIView):
     # permission_classes = [IsAuthenticated, HasPhoneNumberPermission]
     filter_backends = (SearchFilter, OrderingFilter)
     search_fields = ("name", "sender__username", "category__name", "description")
+
+    def embed(self, request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return "Welcome! You are visiting from: {}".format(ip)
+    
+    
 
 
     def get_permissions(self):
