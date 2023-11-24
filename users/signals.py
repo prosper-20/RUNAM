@@ -14,14 +14,14 @@ from django.utils.http import urlsafe_base64_encode
 from django.urls import reverse
 from PROJECT.settings import DEFAULT_FROM_EMAIL
 from decouple import config
-
+from utils import verify_email
 from django.core.mail import EmailMessage
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.conf import settings
 from .models import Profile, Referral
-
+from django.http import HttpResponse
 
 from django.utils.crypto import get_random_string
 from users.validators import validate_phone_number
@@ -44,6 +44,8 @@ def send_confirmation_email(sender, instance, created, **kwargs):
         }) 
             from_email = DEFAULT_FROM_EMAIL
             to_email = instance.email
+            if verify_email(to_email) != 200:
+                return HttpResponse("Email does not exist")
             # send_mail(subject, message, from_email, [to_email], fail_silently=False)
             msg = EmailMessage(subject, message, from_email, [to_email])
             msg.content_subtype = 'html'
