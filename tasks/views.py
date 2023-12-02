@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from rest_framework import serializers
-from .models import Task, AcceptTask, TaskReview, Bidder, NewBidder, Support, Shop, LabReportTask, LaundryTask
+from .models import Task, AcceptTask, TaskReview, Bidder, NewBidder, Support, Shop, LabReportTask, LaundryTask,  Commission
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -330,6 +330,7 @@ class ApiUndergoingTaskView(ListAPIView):
 class ApiCompletedTasksView(ListAPIView):
     queryset = Task.objects.filter(completed=True)
     serializer_class = TaskSerializer
+
 
     
 
@@ -672,6 +673,26 @@ class ApiPostTaskAssignmentView(APIView):
         data = {"Success": f"You have successfully assigned the task to {username}",
                 "Send a message": f"http://127.0.0.1:8000/chat/room/{id}/"}
         return Response(data, status=status.HTTP_202_ACCEPTED)
+    
+
+class ApiCurentTaskCompletedView(APIView):
+    def post(self, request, *args, **kwargs):
+        current_user = request.user
+        task_id = kwargs.get("id")
+        current_task = get_object_or_404(Task, id=task_id)
+        if current_task.sender == current_user:
+            if current_task.picked_up ==True and current_task.being_delivered == True:
+                current_task.completed = True
+                our_commision = Commission.objects.create(task=current_task)
+                our_commision.save()
+                current_task.paid = True
+                current_task.save()
+                return Response({"Success": "Task has been completed and payment has been made"})
+            return Response({"Error": "Task is still running"})
+        return Response({"Message": "You don't have such rights"})
+            
+            
+
     
 
 

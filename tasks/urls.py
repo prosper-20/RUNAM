@@ -26,7 +26,8 @@ from .views import (
     ApiShopCreateTaskView,
     ApiLabReportTaskView,
     ApiUpdateLabReportTaskView,
-    Home
+    Home,
+    ApiCurentTaskCompletedView
 
 )
 
@@ -59,6 +60,7 @@ urlpatterns = [
     path("<str:id>/contact-support/", ApiTaskSupport.as_view(), name="contact-support"),
     path("<str:id>/bidders/assign/<str:username>/", ApiPostTaskAssignmentView.as_view(), name="task-assign-bidder"),
     path("<uuid:id>/", ApiEditTaskView.as_view(), name="task-detail"),
+    path("<uuid:id>/complete/", ApiCurentTaskCompletedView.as_view(), name="complete_current_task")
     
     
 ]
