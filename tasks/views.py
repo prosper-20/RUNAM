@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.views import View
+from decimal import Decimal
 from .serializers import (
     LaundryTaskSerializer,
     LabReportSerializer,
@@ -676,6 +677,7 @@ class ApiPostTaskAssignmentView(APIView):
     
 
 class ApiCurentTaskCompletedView(APIView):
+    permission_classes = [IsAuthenticated]
     def post(self, request, *args, **kwargs):
         current_user = request.user
         task_id = kwargs.get("id")
@@ -683,8 +685,8 @@ class ApiCurentTaskCompletedView(APIView):
         if current_task.sender == current_user:
             if current_task.picked_up ==True and current_task.being_delivered == True:
                 current_task.completed = True
-                our_commision = Commission.objects.create(task=current_task)
-                our_commision.save()
+                commission_amount = Decimal(0.10) * Decimal(current_task.bidding_amount)
+                our_commision = Commission.objects.create(task=current_task, amount=commission_amount)
                 current_task.paid = True
                 current_task.save()
                 return Response({"Success": "Task has been completed and payment has been made"})

@@ -64,10 +64,10 @@ class Commission(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
     
-    def save(self, *args, **kwargs):
-        # Generate a slug based on the title
-        self.amount = Decimal(CommissionPercentage.objects.last().percentage) * self.task.bidding_amount
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     # Generate a slug based on the title
+    #     self.amount = Decimal(CommissionPercentage.objects.last().percentage) * self.task.bidding_amount
+    #     super().save(*args, **kwargs)
 
     def __str__(self):
         return self.task.name 
