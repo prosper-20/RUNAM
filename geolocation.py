@@ -16,4 +16,4 @@ url = f"https://ipgeolocation.abstractapi.com/v1/?api_key={config('ABSTRACT_API_
 
 response = requests.request("GET", url)
 
-print(response.text)
+# print(response.text)

@@ -172,7 +172,7 @@ DATABASES = {
     'USER': 'postgres',
     'PASSWORD': config('DB_PASSWORD4'),
     'HOST': config('PGHOST'),
-    'PORT': config('PG_PORT')  
+    'PORT': config('PGPORT')  
     } 
 } 
 
@@ -280,4 +280,16 @@ CHANNEL_LAYERS = {
     'hosts': [('127.0.0.1', 6379)],
     },
     },
+}
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        # 'LOCATION': 'redis://localhost:6379/1',  # Replace with your Redis server details
+        'LOCATION': config('REDIS_URL'),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
 }
