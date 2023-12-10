@@ -165,17 +165,28 @@ AUTH_USER_MODEL = 'accounts.User'
 #     } 
 # } 
 
-
 DATABASES = {     
     'default': {
     'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'RUNAM3',
+    'NAME': 'railway',
     'USER': 'postgres',
-    'PASSWORD': config('DB_PASSWORD3'),
-    'HOST': 'localhost',
-    'PORT': config('PORT')  
+    'PASSWORD': config('DB_PASSWORD4'),
+    'HOST': config('PGHOST'),
+    'PORT': config('PG_PORT')  
     } 
 } 
+
+
+# DATABASES = {     
+#     'default': {
+#     'ENGINE': 'django.db.backends.postgresql',
+#     'NAME': 'RUNAM3',
+#     'USER': 'postgres',
+#     'PASSWORD': config('DB_PASSWORD3'),
+#     'HOST': 'localhost',
+#     'PORT': config('PORT')  
+#     } 
+# } 
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
